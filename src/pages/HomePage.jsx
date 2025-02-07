@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useScroll, AnimatePresence } from 'framer-motion';
 import AnimatedHero from '../components/AnimatedHero';
-import About from '../components/About';
+import HomeAbout from '../components/HomeAbout';
 import Features from '../components/Features';
 import Testimonials from '../components/Testimonials';
 import Impact from '../components/Impact';
@@ -108,7 +108,7 @@ const HomePage = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
           >
-            <About />
+            <HomeAbout />
             <SectionDivider variant="curve" />
           </motion.section>
 

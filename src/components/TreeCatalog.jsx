@@ -6,14 +6,14 @@ const trees = [
     name: 'Maple Tree',
     species: 'Acer saccharum',
     location: 'North Garden',
-    image: 'https://images.unsplash.com/photo-1588392382834-a891154bca4d?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1477511801984-4ad318ed9846?ixlib=rb-4.0.3',
   },
   {
     id: 2,
     name: 'Oak Tree',
     species: 'Quercus robur',
     location: 'East Garden',
-    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3',
   },
   {
     id: 3,
@@ -27,21 +27,21 @@ const trees = [
     name: 'Cherry Blossom',
     species: 'Prunus serrulata',
     location: 'South Garden',
-    image: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1516334029430-07a8fc1fabad?ixlib=rb-4.0.3',
   },
   {
     id: 5,
     name: 'Willow Tree',
     species: 'Salix babylonica',
     location: 'Riverside',
-    image: 'https://images.unsplash.com/photo-1636403803695-761f8336cd41?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?ixlib=rb-4.0.3',
   },
   {
     id: 6,
     name: 'Birch Tree',
     species: 'Betula pendula',
     location: 'Central Park',
-    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1501261379837-c3b516c6b235?ixlib=rb-4.0.3',
   },
 ];
 

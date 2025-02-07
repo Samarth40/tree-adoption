@@ -1,12 +1,15 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import PasswordGate from './components/PasswordGate';
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import('./pages/HomePage'));
 const ExplorePage = React.lazy(() => import('./pages/ExplorePage'));
+const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
+const CommunityPage = React.lazy(() => import('./pages/CommunityPage'));
 const About = React.lazy(() => import('./components/About'));
 
 // Loading component
@@ -27,6 +30,25 @@ const pageTransition = {
 };
 
 function App() {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  // Check if the app was previously unlocked
+  useEffect(() => {
+    const unlocked = localStorage.getItem('treeAdoptionUnlocked');
+    if (unlocked === 'true') {
+      setIsUnlocked(true);
+    }
+  }, []);
+
+  const handleUnlock = (status) => {
+    setIsUnlocked(status);
+    localStorage.setItem('treeAdoptionUnlocked', status);
+  };
+
+  if (!isUnlocked) {
+    return <PasswordGate onUnlock={handleUnlock} />;
+  }
+
   return (
     <Router>
       <div className="min-h-screen bg-white flex flex-col">
@@ -40,6 +62,8 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/explore" element={<ExplorePage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/community" element={<CommunityPage />} />
                 <Route path="/about" element={<About />} />
                 <Route 
                   path="/contact" 
