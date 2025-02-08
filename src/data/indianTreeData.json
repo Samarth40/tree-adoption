@@ -1,0 +1,1162 @@
+[
+  {
+    "scientific_name": "Tectona grandis",
+    "common_names": {
+      "english": "Teak",
+      "local": "सागौन"
+    },
+    "family": "Lamiaceae",
+    "genus": "Tectona",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/461485031/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461485031/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "yaliana"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462001514/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "kingjenna"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462535167/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "judetisdall"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462635850/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "ttnwen"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462684962/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Townscapes"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:37:51.902Z",
+      "gbif_id": 103260466,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/103260466"
+      }
+    }
+  },
+  {
+    "scientific_name": "Dalbergia sissoo",
+    "common_names": {
+      "english": "Indian Rosewood",
+      "local": "शीशम"
+    },
+    "family": "Fabaceae",
+    "genus": "Dalbergia",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/462526022/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462526022/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Noopur🍀"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/352767509/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Viral joshi"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/353269200/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "Tarun Meena"
+        },
+        {
+          "url": "https://indiabiodiversity.org/biodiv/observations//9f8ac8c3-fd77-465f-8196-3e701db0bea1/dccaebad586e41be8afeccb203729634.jpg"
+        },
+        {
+          "url": "https://indiabiodiversity.org/biodiv/observations//6b37d4bd-9169-4565-bd2f-5e1e28aca7ab/f7f2abde037a49158679ae21386d25db.jpg"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:37:54.135Z",
+      "gbif_id": 213654589,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/213654589"
+      }
+    }
+  },
+  {
+    "scientific_name": "Azadirachta indica",
+    "common_names": {
+      "english": "Neem",
+      "local": "नीम"
+    },
+    "family": "Meliaceae",
+    "genus": "Azadirachta",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/461364116/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461364116/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "hermannk"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462871463/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Noopur🍀"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/463205297/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Marco Polo amarillas vargas"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/463501910/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Fridali García Islas"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/463540318/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Jeff Steele"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:37:56.268Z",
+      "gbif_id": 146769431,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/146769431"
+      }
+    }
+  },
+  {
+    "scientific_name": "Ficus religiosa",
+    "common_names": {
+      "english": "Sacred Fig",
+      "local": "पीपल"
+    },
+    "family": "Moraceae",
+    "genus": "Ficus",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/461592943/original.jpg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461592943/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "brock"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461775133/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "Damien Wallace"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461803983/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Quirien Mulder ten Kate"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462080925/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "airgel"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462123271/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "airgel"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:37:58.928Z",
+      "gbif_id": 213647076,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/213647076"
+      }
+    }
+  },
+  {
+    "scientific_name": "Mangifera indica",
+    "common_names": {
+      "english": "Mango",
+      "local": "आम"
+    },
+    "family": "Anacardiaceae",
+    "genus": "Mangifera",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/460782129/original.jpg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/460782129/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Raquel Saavedra"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461027209/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "jonsense"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461238702/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Hubert Szczygieł"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461240990/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Hubert Szczygieł"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461309400/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Niran Anurakpongsathorn"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:00.793Z",
+      "gbif_id": 156113891,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/156113891"
+      }
+    }
+  },
+  {
+    "scientific_name": "Santalum album",
+    "common_names": {
+      "english": "Indian Sandalwood",
+      "local": "चंदन"
+    },
+    "family": "Santalaceae",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/461619043/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461619043/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Deepa Mohan"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462036948/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "Damien Wallace"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344664928/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "annieliu1718"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/346125485/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Vijay Anand Ismavel"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/371388169/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Sreejith Aditya Jaddu"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:03.119Z",
+      "gbif_id": 205106898,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/205106898"
+      }
+    }
+  },
+  {
+    "scientific_name": "Pterocarpus santalinus",
+    "common_names": {
+      "english": "Red Sanders",
+      "local": "लाल चंदन"
+    },
+    "family": "Fabaceae",
+    "genus": "Pterocarpus",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/344937005/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344937005/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "H01"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/452629376/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Rupak Yadav"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/452633782/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Rupak Yadav"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/443913423/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Kobita Dass Kolli"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/445628998/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Aditya Satish"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:04.972Z",
+      "gbif_id": 179031960,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/179031960"
+      }
+    }
+  },
+  {
+    "scientific_name": "Bambusa bambos",
+    "common_names": {
+      "english": "Giant Thorny Bamboo",
+      "local": "बांस"
+    },
+    "family": "Poaceae",
+    "genus": "Bambusa",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/378154326/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/378154326/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "bicyclherbe"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/379578268/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Paul Antony Mangaly"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/384693564/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Sam Hambly"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/264747768/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Oliver Komar"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/196117711/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Oliver Komar"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:07.361Z",
+      "gbif_id": 8613115,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/8613115"
+      }
+    }
+  },
+  {
+    "scientific_name": "Shorea robusta",
+    "common_names": {
+      "english": "Sal",
+      "local": "साल"
+    },
+    "family": "Dipterocarpaceae",
+    "genus": "Shorea",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/360004635/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/360004635/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "DINESH KUMAR"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/362682302/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Miguel A. Casado"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/389444451/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Aditya Satish"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/391873770/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Aishwarya Chandra"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/398696899/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Samarth Jain"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:09.820Z",
+      "gbif_id": 213646715,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/213646715"
+      }
+    }
+  },
+  {
+    "scientific_name": "Terminalia arjuna",
+    "common_names": {
+      "english": "Arjuna",
+      "local": "अर्जुन"
+    },
+    "family": "Combretaceae",
+    "genus": "Terminalia",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/461920043/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461920043/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "Ravuri Krishna Chaitanya"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344212620/original.jpg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "Apichart Songsangchun"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/356535232/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Maryse Neukomm"
+        },
+        {
+          "url": "https://indiabiodiversity.org/biodiv/observations//b35cc1c9-429b-4aa1-9797-d0da05673775/472e1d63b1ab451eacca7488374684d9.jpg"
+        },
+        {
+          "url": "https://indiabiodiversity.org/biodiv/observations//1cd99fda-ef5e-44ca-ba1d-b4cbf52956dc/582dffcc6f884d78875adefd33208311.jpg"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:12.802Z",
+      "gbif_id": 213649256,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/213649256"
+      }
+    }
+  },
+  {
+    "scientific_name": "Saraca asoca",
+    "common_names": {
+      "english": "Ashoka",
+      "local": "अशोक"
+    },
+    "family": "Fabaceae",
+    "genus": "Saraca",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/343885468/original.jpg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/343885468/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "nak321"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/346004570/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Arpita Dash"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/351758411/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Lakshmi"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/353504681/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Umesh Vaghela"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/356460427/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Vidhya Swaminathan"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:16.828Z",
+      "gbif_id": 103128478,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/103128478"
+      }
+    }
+  },
+  {
+    "scientific_name": "Butea monosperma",
+    "common_names": {
+      "english": "Flame of the Forest",
+      "local": "पलाश"
+    },
+    "family": "Fabaceae",
+    "genus": "Butea",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/462365238/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462365238/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Aditya Satish"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462615189/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Prajwal J Ullal"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344474540/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "vanyc"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344972034/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Deepa Mohan"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/345185448/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "Ravuri Krishna Chaitanya"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:19.433Z",
+      "gbif_id": 179035606,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/179035606"
+      }
+    }
+  },
+  {
+    "scientific_name": "Madhuca longifolia",
+    "common_names": {
+      "english": "Mahua",
+      "local": "महुआ"
+    },
+    "family": "Sapotaceae",
+    "genus": "Madhuca",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/353760124/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/353760124/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Deepa Mohan"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/360005427/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "DINESH KUMAR"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/378220047/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "डी एम सुरणे"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/365285135/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "rightsHolder": "Sandipan Das"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/366323540/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "divya_mojo"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:21.736Z",
+      "gbif_id": 202029258,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/202029258"
+      }
+    }
+  },
+  {
+    "scientific_name": "Tamarindus indica",
+    "common_names": {
+      "english": "Tamarind",
+      "local": "इमली"
+    },
+    "family": "Fabaceae",
+    "genus": "Tamarindus",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/460892150/original.jpeg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/460892150/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Emilie Vallez"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344228557/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "frase4days"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344248085/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "sarininnthadi"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344484855/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "ericdar"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/344777629/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "benjaminsisko"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:23.810Z",
+      "gbif_id": 103128544,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/103128544"
+      }
+    }
+  },
+  {
+    "scientific_name": "Artocarpus heterophyllus",
+    "common_names": {
+      "english": "Jackfruit",
+      "local": "कटहल"
+    },
+    "family": "Moraceae",
+    "distribution": [],
+    "habitat": {
+      "soil_texture": [],
+      "light": null,
+      "atmospheric_humidity": null,
+      "minimum_temperature": null,
+      "maximum_temperature": null
+    },
+    "characteristics": {
+      "height": {
+        "average": null,
+        "maximum": null
+      },
+      "spread": {
+        "average": null,
+        "maximum": null
+      },
+      "growth_rate": null,
+      "growth_months": [],
+      "leaf_retention": null,
+      "leaf_color": null,
+      "flower_color": [],
+      "bloom_months": []
+    },
+    "uses": {
+      "commercial": [],
+      "medicinal": [],
+      "cultural": [],
+      "edible": false,
+      "edible_parts": []
+    },
+    "images": {
+      "primary": "https://inaturalist-open-data.s3.amazonaws.com/photos/461485238/original.jpg",
+      "all": [
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461485238/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "James K. Wetterer"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/461485579/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "James K. Wetterer"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462123213/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "airgel"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/462550445/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "brianhof"
+        },
+        {
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/463268640/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "Muhammad Nasry"
+        }
+      ]
+    },
+    "description": null,
+    "metadata": {
+      "last_updated": "2025-02-08T13:38:27.003Z",
+      "gbif_id": 196397844,
+      "sources": {
+        "gbif": "https://www.gbif.org/species/196397844"
+      }
+    }
+  }
+]

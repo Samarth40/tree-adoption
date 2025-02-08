@@ -8,10 +8,15 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "download-trees": "node src/scripts/downloadTreeData.js",
+    "fetch-indian-data": "node src/scripts/downloadIndianTreeData.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@tanstack/react-query": "^5.66.0",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
     "framer-motion": "^11.0.20",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

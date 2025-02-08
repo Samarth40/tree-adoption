@@ -1,15 +1,26 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PasswordGate from './components/PasswordGate';
+import ExplorePage from './pages/ExplorePage';
+import TreePlayground from './pages/TreePlayground';
+import CommunityPage from './pages/CommunityPage';
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import('./pages/HomePage'));
-const ExplorePage = React.lazy(() => import('./pages/ExplorePage'));
-const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
-const CommunityPage = React.lazy(() => import('./pages/CommunityPage'));
 const About = React.lazy(() => import('./components/About'));
 
 // Loading component
@@ -50,36 +61,38 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="min-h-screen bg-white flex flex-col">
-        <Navbar />
-        <Suspense fallback={<PageLoader />}>
-          <AnimatePresence mode="wait">
-            <motion.main 
-              className="flex-grow"
-              {...pageTransition}
-            >
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/explore" element={<ExplorePage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/community" element={<CommunityPage />} />
-                <Route path="/about" element={<About />} />
-                <Route 
-                  path="/contact" 
-                  element={
-                    <div className="p-8 text-center min-h-[60vh] flex items-center justify-center">
-                      <h1 className="text-2xl text-forest-green">Contact page coming soon!</h1>
-                    </div>
-                  } 
-                />
-              </Routes>
-            </motion.main>
-          </AnimatePresence>
-        </Suspense>
-        <Footer />
-      </div>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <div className="min-h-screen bg-white flex flex-col">
+          <Navbar />
+          <Suspense fallback={<PageLoader />}>
+            <AnimatePresence mode="wait">
+              <motion.main 
+                className="flex-grow"
+                {...pageTransition}
+              >
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/explore" element={<ExplorePage />} />
+                  <Route path="/playground/:treeId" element={<TreePlayground />} />
+                  <Route path="/community" element={<CommunityPage />} />
+                  <Route path="/about" element={<About />} />
+                  <Route 
+                    path="/contact" 
+                    element={
+                      <div className="p-8 text-center min-h-[60vh] flex items-center justify-center">
+                        <h1 className="text-2xl text-forest-green">Contact page coming soon!</h1>
+                      </div>
+                    } 
+                  />
+                </Routes>
+              </motion.main>
+            </AnimatePresence>
+          </Suspense>
+          <Footer />
+        </div>
+      </Router>
+    </QueryClientProvider>
   );
 }
 
