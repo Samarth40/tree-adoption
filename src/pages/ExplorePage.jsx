@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import TreeImage from '../components/TreeImage';
@@ -10,54 +10,51 @@ const ExplorePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     searchTerm: '',
-    growthRate: '',
-    region: '',
-    useType: ''
+    activeSearchTerm: '',
+    sortBy: 'random'
   });
   const [selectedTree, setSelectedTree] = useState(null);
+  const [randomSeed, setRandomSeed] = useState(Math.random());
 
   const TREES_PER_PAGE = 12;
 
-  // Filter and paginate trees
+  const getSortedTrees = (trees) => {
+    if (filters.sortBy === 'random') {
+      return [...trees].sort(() => 0.5 - Math.random());
+    }
+    return trees;
+  };
+
   const getFilteredTrees = () => {
     let filteredTrees = [...treeData];
     
-    if (filters.searchTerm) {
-      const searchTerm = filters.searchTerm.toLowerCase();
-      filteredTrees = filteredTrees.filter(tree => 
-        tree.scientific_name.toLowerCase().includes(searchTerm) ||
-        tree.common_names.english?.toLowerCase().includes(searchTerm) ||
-        tree.family?.toLowerCase().includes(searchTerm)
-      );
-    }
-
-    if (filters.growthRate) {
-      filteredTrees = filteredTrees.filter(tree => 
-        tree.characteristics.growth_rate?.toLowerCase() === filters.growthRate.toLowerCase()
-      );
-    }
-
-    if (filters.region) {
-      filteredTrees = filteredTrees.filter(tree =>
-        tree.distribution.some(region =>
-          region.toLowerCase().includes(filters.region.toLowerCase())
-        )
-      );
-    }
-
-    if (filters.useType) {
+    if (filters.activeSearchTerm) {
+      const searchTerm = filters.activeSearchTerm.toLowerCase().trim();
+      
       filteredTrees = filteredTrees.filter(tree => {
-        const useType = filters.useType.toLowerCase();
-        return (
-          tree.uses.commercial.some(use => use.toLowerCase().includes(useType)) ||
-          tree.uses.medicinal.some(use => use.toLowerCase().includes(useType)) ||
-          tree.uses.cultural.some(use => use.toLowerCase().includes(useType))
-        );
+        // Get the display name that's shown on the card
+        const displayName = tree.common_names.english || tree.scientific_name.split(' ')[0];
+        
+        const searchableFields = [
+          displayName,
+          tree.scientific_name,
+          tree.common_names.english,
+          tree.common_names.local,
+          tree.family,
+          tree.genus
+        ].filter(Boolean).map(field => field.toLowerCase());
+
+        // Check if any searchable field includes the search term
+        return searchableFields.some(field => field.includes(searchTerm));
       });
     }
 
-    return filteredTrees;
+    return getSortedTrees(filteredTrees);
   };
+
+  useEffect(() => {
+    setRandomSeed(Math.random());
+  }, []);
 
   const filteredTrees = getFilteredTrees();
   const totalPages = Math.ceil(filteredTrees.length / TREES_PER_PAGE);
@@ -72,6 +69,20 @@ const ExplorePage = () => {
       [filterType]: value
     }));
     setCurrentPage(1);
+  };
+
+  const handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      handleFilterChange('activeSearchTerm', filters.searchTerm);
+    }
+  };
+
+  const clearSearch = () => {
+    setFilters(prev => ({
+      ...prev,
+      searchTerm: '',
+      activeSearchTerm: ''
+    }));
   };
 
   const handlePageChange = (newPage) => {
@@ -121,65 +132,146 @@ const ExplorePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cream py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-forest-green mb-4">
-            Explore Indian Trees
-          </h1>
-          <p className="text-xl text-sage-green">
-            Discover the rich diversity of Indian trees and their cultural significance
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-forest-green/5 via-cream to-sage-green/10">
+      <div className="relative bg-gradient-to-b from-forest-green/10 to-transparent pt-32 pb-20">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-forest-green/5 rounded-full blur-[100px] -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-sage-green/5 rounded-full blur-[100px] translate-y-1/2"></div>
         </div>
 
-        {/* Filters */}
-        <div className="mb-8 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <input
-              type="text"
-              placeholder="Search trees..."
-              className="w-full px-4 py-2 rounded-lg border border-sage-green/30 focus:outline-none focus:ring-2 focus:ring-forest-green"
-              value={filters.searchTerm}
-              onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-            />
-            <select
-              className="w-full px-4 py-2 rounded-lg border border-sage-green/30 focus:outline-none focus:ring-2 focus:ring-forest-green"
-              value={filters.growthRate}
-              onChange={(e) => handleFilterChange('growthRate', e.target.value)}
-            >
-              <option value="">All Growth Rates</option>
-              <option value="Slow">Slow</option>
-              <option value="Moderate">Moderate</option>
-              <option value="Fast">Fast</option>
-            </select>
-            <select
-              className="w-full px-4 py-2 rounded-lg border border-sage-green/30 focus:outline-none focus:ring-2 focus:ring-forest-green"
-              value={filters.useType}
-              onChange={(e) => handleFilterChange('useType', e.target.value)}
-            >
-              <option value="">All Uses</option>
-              <option value="Medicinal">Medicinal</option>
-              <option value="Commercial">Commercial</option>
-              <option value="Sacred">Sacred</option>
-            </select>
-            <select
-              className="w-full px-4 py-2 rounded-lg border border-sage-green/30 focus:outline-none focus:ring-2 focus:ring-forest-green"
-              value={filters.region}
-              onChange={(e) => handleFilterChange('region', e.target.value)}
-            >
-              <option value="">All Regions</option>
-              <option value="North">North India</option>
-              <option value="South">South India</option>
-              <option value="Central">Central India</option>
-              <option value="Western">Western India</option>
-              <option value="Eastern">Eastern India</option>
-            </select>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        >
+          <div className="inline-block mb-6">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium bg-forest-green/10 text-forest-green">
+              <span className="mr-2">🌿</span>
+              Explore Our Collection
+            </span>
           </div>
-        </div>
 
-        {/* Tree Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <h1 className="text-5xl md:text-6xl font-bold text-forest-green mb-6 leading-tight">
+            Sacred Tree Collection
+          </h1>
+
+          <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+            Discover the rich heritage of Indian trees, their medicinal properties, and cultural significance
+          </p>
+
+          <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 transform hover:scale-105 transition-transform duration-300">
+              <div className="text-4xl font-bold text-forest-green mb-2">{treeData.length}+</div>
+              <div className="text-sm text-gray-600 font-medium">Sacred Trees</div>
+            </div>
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 transform hover:scale-105 transition-transform duration-300">
+              <div className="text-4xl font-bold text-forest-green mb-2">100+</div>
+              <div className="text-sm text-gray-600 font-medium">Medicinal Uses</div>
+            </div>
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 transform hover:scale-105 transition-transform duration-300">
+              <div className="text-4xl font-bold text-forest-green mb-2">50+</div>
+              <div className="text-sm text-gray-600 font-medium">Regions</div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl mb-12 relative overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-forest-green/5 to-transparent rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-sage-green/5 to-transparent rounded-full translate-y-1/2 -translate-x-1/2"></div>
+
+          <div className="space-y-6">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                <svg className="w-5 h-5 text-forest-green/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search by tree name, family, or genus (press Enter to search)..."
+                className="w-full pl-12 pr-6 py-4 rounded-2xl border-2 border-forest-green/10 focus:border-forest-green/30 focus:outline-none bg-white/50 backdrop-blur-sm text-lg transition-all duration-300"
+                value={filters.searchTerm}
+                onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
+                onKeyDown={handleSearch}
+              />
+              {filters.searchTerm && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute inset-y-0 right-4 flex items-center text-forest-green/40 hover:text-forest-green transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            <div className="text-sm text-gray-500 space-y-2">
+              <div className="flex items-center justify-between">
+                <span>
+                  Showing {currentTrees.length} of {filteredTrees.length} trees
+                </span>
+                {filters.activeSearchTerm && (
+                  <span className="text-forest-green">
+                    Search results for "{filters.activeSearchTerm}"
+                  </span>
+                )}
+              </div>
+              {!filters.activeSearchTerm && (
+                <div className="text-gray-400 flex flex-wrap gap-2">
+                  <span>Try searching for:</span>
+                  <button 
+                    onClick={() => {
+                      handleFilterChange('searchTerm', 'medicinal');
+                      handleFilterChange('activeSearchTerm', 'medicinal');
+                    }}
+                    className="text-forest-green hover:underline"
+                  >
+                    medicinal
+                  </button>
+                  <span>•</span>
+                  <button 
+                    onClick={() => {
+                      handleFilterChange('searchTerm', 'sacred');
+                      handleFilterChange('activeSearchTerm', 'sacred');
+                    }}
+                    className="text-forest-green hover:underline"
+                  >
+                    sacred
+                  </button>
+                  <span>•</span>
+                  <button 
+                    onClick={() => {
+                      handleFilterChange('searchTerm', 'fast growing');
+                      handleFilterChange('activeSearchTerm', 'fast growing');
+                    }}
+                    className="text-forest-green hover:underline"
+                  >
+                    fast growing
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {filters.activeSearchTerm && filteredTrees.length === 0 && (
+              <div className="bg-cream/50 rounded-xl p-4 text-center">
+                <p className="text-gray-600 mb-2">No trees found matching "{filters.activeSearchTerm}"</p>
+                <p className="text-sm text-gray-500">
+                  Try searching for tree names, families, or genus
+                </p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        <div key={randomSeed} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {currentTrees.map((tree) => (
             <motion.div
               key={tree.scientific_name}
@@ -188,7 +280,6 @@ const ExplorePage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {/* Hover Overlay with Quick Actions */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col justify-end p-6">
                 <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                   <h3 className="text-2xl font-bold text-white mb-2">
@@ -214,9 +305,7 @@ const ExplorePage = () => {
                 </div>
               </div>
 
-              {/* Main Card Content */}
               <div className="relative aspect-[4/5] overflow-hidden">
-                {/* Image */}
                 <TreeImage
                   src={tree.images.primary}
                   alt={tree.common_names.english || tree.scientific_name}
@@ -224,9 +313,7 @@ const ExplorePage = () => {
                   treeType={getTreeType(tree)}
                 />
 
-                {/* Top Tags */}
                 <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2 z-[5]">
-                  {/* Tree Type Tags - Only show if they exist */}
                   {tree.uses.medicinal.length > 0 && (
                     <span className="px-3 py-1 bg-leaf-green/20 text-white text-xs rounded-full font-medium backdrop-blur-sm border border-white/10">
                       🌿 Medicinal
@@ -249,16 +336,13 @@ const ExplorePage = () => {
                   )}
                 </div>
 
-                {/* Image Count Badge */}
                 {tree.images.all?.length > 1 && (
                   <div className="absolute top-4 right-4 bg-black/40 text-white px-3 py-1 rounded-full text-xs backdrop-blur-sm border border-white/10 z-[5]">
                     +{tree.images.all.length - 1} photos
                   </div>
                 )}
 
-                {/* Bottom Info Panel */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
-                  {/* Names */}
                   <div className="mb-3">
                     <h3 className="text-xl font-bold text-white mb-1 line-clamp-1">
                       {tree.common_names.english || tree.scientific_name.split(' ')[0]}
@@ -268,7 +352,6 @@ const ExplorePage = () => {
                     </p>
                   </div>
 
-                  {/* Quick Info Grid - Only show if data exists */}
                   <div className="grid grid-cols-2 gap-2">
                     {tree.family && (
                       <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 border border-white/5">
@@ -286,7 +369,6 @@ const ExplorePage = () => {
                     )}
                   </div>
 
-                  {/* Local Name - Only show if exists */}
                   {tree.common_names.local && (
                     <div className="mt-2 inline-block px-3 py-1 bg-white/10 backdrop-blur-sm rounded-lg border border-white/5">
                       <span className="text-cream/80 text-sm">{tree.common_names.local}</span>
@@ -298,30 +380,28 @@ const ExplorePage = () => {
           ))}
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
-          <div className="mt-12 flex justify-center space-x-2">
+          <div className="my-12 pb-16 flex justify-center space-x-2">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-4 py-2 rounded-lg bg-forest-green text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 rounded-xl bg-forest-green text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-forest-green/90 transition-colors"
             >
               Previous
             </button>
-            <span className="px-4 py-2 text-forest-green">
+            <span className="px-6 py-3 text-forest-green bg-white/50 backdrop-blur-sm rounded-xl font-medium">
               Page {currentPage} of {totalPages}
             </span>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 rounded-lg bg-forest-green text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 rounded-xl bg-forest-green text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-forest-green/90 transition-colors"
             >
               Next
             </button>
           </div>
         )}
 
-        {/* Tree Details Modal */}
         {selectedTree && (
           <TreeDetails
             tree={selectedTree}

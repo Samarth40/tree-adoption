@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from './components/Navbar';
@@ -8,6 +8,14 @@ import PasswordGate from './components/PasswordGate';
 import ExplorePage from './pages/ExplorePage';
 import TreePlayground from './pages/TreePlayground';
 import CommunityPage from './pages/CommunityPage';
+import DashboardPage from './pages/DashboardPage';
+import AdoptionPage from './pages/AdoptionPage';
+import Login from './components/Login';
+import Register from './components/Register';
+import PrivateRoute from './components/PrivateRoute';
+import { useAuth } from './contexts/AuthContext';
+import UserProfile from './components/UserProfile';
+import AdoptionSuccessPage from './pages/AdoptionSuccessPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -42,6 +50,7 @@ const pageTransition = {
 
 function App() {
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const { currentUser } = useAuth();
 
   // Check if the app was previously unlocked
   useEffect(() => {
@@ -72,19 +81,47 @@ function App() {
                 {...pageTransition}
               >
                 <Routes>
+                  {/* Public Routes */}
                   <Route path="/" element={<HomePage />} />
                   <Route path="/explore" element={<ExplorePage />} />
-                  <Route path="/playground/:treeId" element={<TreePlayground />} />
-                  <Route path="/community" element={<CommunityPage />} />
                   <Route path="/about" element={<About />} />
-                  <Route 
-                    path="/contact" 
-                    element={
-                      <div className="p-8 text-center min-h-[60vh] flex items-center justify-center">
-                        <h1 className="text-2xl text-forest-green">Contact page coming soon!</h1>
-                      </div>
-                    } 
-                  />
+                  <Route path="/login" element={currentUser ? <Navigate to="/dashboard" /> : <Login />} />
+                  <Route path="/register" element={currentUser ? <Navigate to="/dashboard" /> : <Register />} />
+
+                  {/* Protected Routes */}
+                  <Route path="/playground/:treeId" element={
+                    <PrivateRoute>
+                      <TreePlayground />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/adopt/:treeId" element={
+                    <PrivateRoute>
+                      <AdoptionPage />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/adoption/success" element={
+                    <PrivateRoute>
+                      <AdoptionSuccessPage />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/community" element={
+                    <PrivateRoute>
+                      <CommunityPage />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard" element={
+                    <PrivateRoute>
+                      <DashboardPage />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/profile" element={
+                    <PrivateRoute>
+                      <UserProfile />
+                    </PrivateRoute>
+                  } />
+                  
+                  {/* Fallback Route */}
+                  <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </motion.main>
             </AnimatePresence>

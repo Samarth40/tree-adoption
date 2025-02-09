@@ -1,0 +1,27 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "stories",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "discussions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "lastActive", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

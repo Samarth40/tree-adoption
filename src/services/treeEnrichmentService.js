@@ -110,13 +110,13 @@ class TreeEnrichmentService {
       // Merge with existing uses
       const mergedUses = {
         ...tree.uses,
-        medicinal: tree.uses.medicinal.length > 0 ? tree.uses.medicinal : [{
+        medicinal: (tree.uses?.medicinal?.length ?? 0) > 0 ? tree.uses.medicinal : [{
           use: "May have traditional medicinal properties",
           scientific_basis: "Further research needed to confirm medicinal benefits",
           is_fallback: !isAIGenerated
         }],
-        commercial: tree.uses.commercial.length > 0 ? tree.uses.commercial : ["Potential for sustainable resource use"],
-        cultural: tree.uses.cultural.length > 0 ? tree.uses.cultural : ["Historical significance in local ecosystems"],
+        commercial: (tree.uses?.commercial?.length ?? 0) > 0 ? tree.uses.commercial : ["Potential for sustainable resource use"],
+        cultural: (tree.uses?.cultural?.length ?? 0) > 0 ? tree.uses.cultural : ["Historical significance in local ecosystems"],
         ecological: enrichedData.uses?.ecological || ["Contributes to local biodiversity"],
         ai_enhanced: true,
         is_fallback: !isAIGenerated
@@ -180,13 +180,13 @@ class TreeEnrichmentService {
         },
         uses: {
           ...tree.uses,
-          medicinal: tree.uses.medicinal.length > 0 ? tree.uses.medicinal : [{
+          medicinal: (tree.uses?.medicinal?.length ?? 0) > 0 ? tree.uses.medicinal : [{
             use: "May have traditional medicinal properties",
             scientific_basis: "Further research needed",
             is_fallback: true
           }],
-          commercial: tree.uses.commercial.length > 0 ? tree.uses.commercial : ["Sustainable resource potential"],
-          cultural: tree.uses.cultural.length > 0 ? tree.uses.cultural : ["Local ecological significance"],
+          commercial: (tree.uses?.commercial?.length ?? 0) > 0 ? tree.uses.commercial : ["Sustainable resource potential"],
+          cultural: (tree.uses?.cultural?.length ?? 0) > 0 ? tree.uses.cultural : ["Local ecological significance"],
           ecological: ["Biodiversity support", "Ecosystem services"],
           ai_enhanced: true,
           is_fallback: true

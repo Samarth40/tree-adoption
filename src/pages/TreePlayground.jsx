@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import TreeImage from '../components/TreeImage';
 import TreeEnrichmentService from '../services/treeEnrichmentService';
@@ -20,6 +20,60 @@ const DataSourceBadge = ({ isFallback }) => (
     </svg>
     {isFallback ? 'General Information' : 'AI Enhanced'}
   </span>
+);
+
+const LoadingOverlay = () => (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+      <div className="text-center">
+        <div className="w-20 h-20 relative mx-auto mb-6">
+          <div className="absolute inset-0 border-4 border-forest-green/30 rounded-full animate-ping"></div>
+          <div className="absolute inset-2 border-4 border-forest-green/50 rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
+          <div className="absolute inset-4 border-4 border-forest-green/70 rounded-full animate-ping" style={{ animationDelay: '0.4s' }}></div>
+        </div>
+        <h2 className="text-2xl font-bold text-forest-green mb-4">AI Enhancement in Progress</h2>
+        <div className="space-y-4">
+          <p className="text-gray-600">Our AI is analyzing this tree to provide you with:</p>
+          <ul className="text-left text-gray-600 space-y-2 mb-4">
+            <li className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Detailed Characteristics
+            </li>
+            <li className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Traditional Uses
+            </li>
+            <li className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Environmental Benefits
+            </li>
+            <li className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Care Guidelines
+            </li>
+          </ul>
+          <div className="relative pt-1">
+            <div className="overflow-hidden h-2 text-xs flex rounded-full bg-forest-green/20">
+              <motion.div 
+                className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-forest-green"
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 3, ease: "easeInOut" }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 );
 
 const TreePlayground = () => {
@@ -57,19 +111,7 @@ const TreePlayground = () => {
   }, [treeId]);
 
   if (!tree) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-forest-green/5 via-cream to-sage-green/10 flex items-center justify-center">
-        <div className="text-center max-w-lg mx-auto px-4">
-          <div className="w-20 h-20 relative mx-auto mb-6">
-            <div className="absolute inset-0 border-4 border-forest-green/30 rounded-full animate-ping"></div>
-            <div className="absolute inset-2 border-4 border-forest-green/50 rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
-            <div className="absolute inset-4 border-4 border-forest-green/70 rounded-full animate-ping" style={{ animationDelay: '0.4s' }}></div>
-          </div>
-          <h2 className="text-2xl font-bold text-forest-green mb-4">Loading Tree Information</h2>
-          <p className="text-forest-green/80 text-lg mb-4">Please wait while we gather information about this tree...</p>
-        </div>
-      </div>
-    );
+    return <LoadingOverlay />;
   }
 
   // Format height and spread values
@@ -131,6 +173,10 @@ const TreePlayground = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-forest-green/5 via-cream to-sage-green/10">
+      <AnimatePresence>
+        {isEnriching && <LoadingOverlay />}
+      </AnimatePresence>
+      
       {/* Hero Section */}
       <div className="relative h-[70vh] overflow-hidden">
         {/* Background Image */}
@@ -180,6 +226,20 @@ const TreePlayground = () => {
                         <span className="text-xl text-white">{tree.common_names.local}</span>
                       </div>
                     )}
+                    <Link
+                      to={`/adopt/${encodeURIComponent(tree.scientific_name)}`}
+                      className="inline-flex items-center gap-3 px-8 py-4 bg-forest-green text-white rounded-xl hover:bg-forest-green/90 transition-all group text-lg font-medium shadow-lg hover:shadow-xl"
+                    >
+                      <span>Adopt This Tree</span>
+                      <svg 
+                        className="w-6 h-6 transform transition-transform group-hover:translate-x-1" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </Link>
                   </motion.div>
                 </div>
               </div>
@@ -212,15 +272,6 @@ const TreePlayground = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 -mt-20 relative z-30">
-        {isEnriching && (
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-forest-green text-white px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
-            <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span>AI Enhancing Content...</span>
-          </div>
-        )}
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Quick Stats */}
           {tree.family && (
@@ -273,20 +324,20 @@ const TreePlayground = () => {
               <p className="text-lg text-gray-700 mb-8">
                 By adopting this tree, you'll contribute to environmental conservation and create a lasting legacy for future generations.
               </p>
-              <button
-                onClick={() => setShowAdoptionInfo(!showAdoptionInfo)}
-                className="bg-forest-green text-white px-8 py-4 rounded-xl hover:bg-forest-green/90 transition-colors flex items-center gap-3 text-lg font-medium group"
+              <Link
+                to={`/adopt/${encodeURIComponent(tree.scientific_name)}`}
+                className="bg-forest-green text-white px-8 py-4 rounded-xl hover:bg-forest-green/90 transition-colors flex items-center gap-3 text-lg font-medium group w-fit"
               >
-                <span>Learn About Adoption</span>
+                <span>Adopt Now</span>
                 <svg 
-                  className={`w-6 h-6 transform transition-transform group-hover:translate-x-1 ${showAdoptionInfo ? 'rotate-180' : ''}`}
+                  className="w-6 h-6 transform transition-transform group-hover:translate-x-1"
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </button>
+              </Link>
             </div>
             <div className="relative">
               {tree.environmental_benefits?.length > 0 && (

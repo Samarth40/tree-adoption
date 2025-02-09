@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,13 +23,27 @@ const Navbar = () => {
     return location.pathname === path;
   };
 
-  const navItems = [
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
+
+  const publicNavItems = [
     { label: 'Home', path: '/' },
-    { label: 'Explore Trees', path: '/explore' },
-    { label: 'My Trees', path: '/dashboard' },
-    { label: 'Community', path: '/community' },
+    { label: 'Explore', path: '/explore' },
     { label: 'About', path: '/about' },
   ];
+
+  const privateNavItems = [
+    { label: 'My Trees', path: '/dashboard' },
+    { label: 'Community', path: '/community' },
+  ];
+
+  const navItems = [...publicNavItems, ...(currentUser ? privateNavItems : [])];
 
   return (
     <nav 
@@ -79,18 +96,34 @@ const Navbar = () => {
 
           {/* Auth Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Link
-              to="/login"
-              className="px-4 py-2 text-white hover:text-cream transition-colors duration-300"
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="px-6 py-2.5 bg-gradient-to-r from-leaf-green to-sage-green hover:from-sage-green hover:to-leaf-green text-white rounded-xl shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
-            >
-              Sign Up
-            </Link>
+            {currentUser ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600">
+                  {currentUser.email}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg bg-forest-green text-white text-sm font-medium hover:bg-forest-green/90 transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-white hover:text-cream transition-colors duration-300"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-6 py-2.5 bg-gradient-to-r from-leaf-green to-sage-green hover:from-sage-green hover:to-leaf-green text-white rounded-xl shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -150,20 +183,39 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="pt-4 space-y-3">
-                <Link
-                  to="/login"
-                  className="block px-4 py-3 text-white hover:bg-white/10 rounded-xl transition-all duration-300"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className="block px-4 py-3 bg-gradient-to-r from-leaf-green to-sage-green hover:from-sage-green hover:to-leaf-green text-white rounded-xl shadow-lg transition-all duration-300"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
+                {currentUser ? (
+                  <div className="px-4 py-3">
+                    <div className="text-sm text-gray-600 mb-2">
+                      {currentUser.email}
+                    </div>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-2 rounded-lg bg-forest-green text-white text-sm font-medium hover:bg-forest-green/90 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="block px-4 py-3 text-white hover:bg-white/10 rounded-xl transition-all duration-300"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="block px-4 py-3 bg-gradient-to-r from-leaf-green to-sage-green hover:from-sage-green hover:to-leaf-green text-white rounded-xl shadow-lg transition-all duration-300"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
