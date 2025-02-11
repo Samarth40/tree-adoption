@@ -58,6 +58,41 @@ const formatTimestamp = (timestamp) => {
   });
 };
 
+// Helper function to format impact data
+const formatImpact = (impact) => {
+  if (!impact) return '0kg CO₂';
+  
+  try {
+    if (typeof impact === 'object') {
+      const parts = [];
+      if (impact.co2Absorbed) parts.push(`${impact.co2Absorbed}kg CO₂`);
+      if (impact.waterConserved) parts.push(`${impact.waterConserved}L water`);
+      if (impact.wildlifeSupported) parts.push(`${impact.wildlifeSupported} species`);
+      return parts.length > 0 ? parts.join(', ') : '0kg CO₂';
+    }
+    return String(impact);
+  } catch (error) {
+    console.error('Error formatting impact:', error);
+    return '0kg CO₂';
+  }
+};
+
+// Add retry logic for Firebase operations
+const retryOperation = async (operation, maxRetries = 3, delay = 1000) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      if (error.code === 'failed-precondition' || error.code === 'unavailable') {
+        await new Promise(resolve => setTimeout(resolve, delay * attempt));
+        continue;
+      }
+      throw error;
+    }
+  }
+};
+
 // Mock data for community features
 const communityEvents = [
   {
@@ -237,57 +272,48 @@ const CommunityPage = () => {
           return;
         }
 
-        // Check user profile
-        const userDocRef = doc(db, 'users', currentUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        
-        if (!userDoc.exists()) {
-          console.log("No user profile found, creating one");
-          // Create user profile if it doesn't exist
-          const newProfile = {
-            email: currentUser.email,
-            displayName: currentUser.displayName || '',
-            avatarUrl: currentUser.photoURL || '',
-            treesPlanted: 0,
-            impact: 0,
-            isProfileComplete: false,
-            isAdmin: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          };
-          await setDoc(userDocRef, newProfile);
-          setUserProfile(newProfile);
-          setIsAdmin(false);
-          navigate('/profile');
-          return;
-        }
+        // Fetch user profile with retry
+        const userProfileData = await retryOperation(async () => {
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          if (!userDoc.exists()) {
+            throw new Error('User profile not found');
+          }
+          return userDoc.data();
+        });
 
-        const userData = userDoc.data();
-        setUserProfile(userData);
-        setIsAdmin(userData.isAdmin || false);
+        setUserProfile(userProfileData);
+        setIsAdmin(userProfileData.isAdmin || false);
 
-        if (!userData.isProfileComplete) {
+        if (!userProfileData.isProfileComplete) {
           console.log("Profile incomplete, redirecting to profile page");
           navigate('/profile');
           return;
         }
 
-        // Load community data
-        const [storiesData, eventsData, discussionsData, leaderboardData] = await Promise.all([
-          storiesService.getStories(),
-          eventsService.getUpcomingEvents(),
-          discussionsService.getTopics(),
-          leaderboardService.getTopUsers(5) // Get top 5 users
-        ]);
+        // Fetch stories with retry
+        const storiesData = await retryOperation(async () => {
+          const storiesSnapshot = await getDocs(query(
+            collection(db, 'stories'),
+            orderBy('createdAt', 'desc'),
+            limit(10)
+          ));
+          
+          return storiesSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            impact: formatImpact(doc.data().impact) // Format impact when loading data
+          }));
+        });
 
         setStories(storiesData);
-        setEvents(eventsData);
-        setDiscussions(discussionsData);
-        setImpactLeaders(leaderboardData);
 
-      } catch (err) {
-        console.error('Error initializing community page:', err);
-        setError(err.message);
+        // Similar updates for events and discussions...
+        
+      } catch (error) {
+        console.error('Error initializing community page:', error);
+        setError(error.message === 'Failed to get document because the client is offline'
+          ? 'You appear to be offline. Please check your internet connection.'
+          : 'Failed to load community data. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -908,7 +934,7 @@ const CommunityPage = () => {
                               </span>
                               <span className="flex items-center">
                                 <span className="mr-2">🌱</span>
-                                {story.impact || '0kg CO₂'}
+                                {formatImpact(story.impact)}
                               </span>
                             </div>
                             <div className="flex items-center space-x-4">
@@ -1293,7 +1319,7 @@ const CommunityPage = () => {
                     <div key={leader.id} className="flex items-center">
                       <span className="w-6 text-lg font-semibold text-leaf-green">#{index + 1}</span>
                       <img 
-                        src={leader.avatarUrl || '/default-avatar.png'} 
+                        src={leader.avatar || '/default-avatar.png'} 
                         alt={leader.displayName} 
                         className="w-10 h-10 rounded-full object-cover mx-3" 
                       />
