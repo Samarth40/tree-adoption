@@ -278,9 +278,12 @@ const CommunityPage = () => {
           if (!userDoc.exists()) {
             throw new Error('User profile not found');
           }
+          console.log('User profile data:', userDoc.data());
           return userDoc.data();
         });
 
+        console.log('Setting user profile:', userProfileData);
+        console.log('Admin status:', userProfileData.isAdmin);
         setUserProfile(userProfileData);
         setIsAdmin(userProfileData.isAdmin || false);
 
@@ -290,24 +293,8 @@ const CommunityPage = () => {
           return;
         }
 
-        // Fetch stories with retry
-        const storiesData = await retryOperation(async () => {
-          const storiesSnapshot = await getDocs(query(
-            collection(db, 'stories'),
-            orderBy('createdAt', 'desc'),
-            limit(10)
-          ));
-          
-          return storiesSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            impact: formatImpact(doc.data().impact) // Format impact when loading data
-          }));
-        });
-
-        setStories(storiesData);
-
-        // Similar updates for events and discussions...
+        // Load all community data
+        await loadCommunityData();
         
       } catch (error) {
         console.error('Error initializing community page:', error);
@@ -436,12 +423,14 @@ const CommunityPage = () => {
 
   const handleEventSubmit = async (e) => {
     e.preventDefault();
+    console.log('Submitting event. Admin status:', isAdmin);
     if (!userProfile.isProfileComplete) {
       navigate('/profile');
       return;
     }
 
     if (!isAdmin) {
+      console.log('User is not admin. Profile:', userProfile);
       setError('Only administrators can create events');
       return;
     }
@@ -593,6 +582,8 @@ const CommunityPage = () => {
       ]);
 
       console.log('Events data received:', eventsData);
+      console.log('Discussions data received:', discussionsData);
+      
       setStories(storiesData);
       setEvents(eventsData);
       setDiscussions(discussionsData);

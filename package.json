@@ -12,7 +12,8 @@
     "download-trees": "node src/scripts/downloadTreeData.js",
     "fetch-indian-data": "node src/scripts/downloadIndianTreeData.js",
     "init-firestore": "node firestore-init.js",
-    "server": "node server.js"
+    "server": "node server.js",
+    "make-admin": "node scripts/makeAdmin.js"
   },
   "dependencies": {
     "@firebase/analytics": "^0.10.1",

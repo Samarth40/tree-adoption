@@ -1,12 +1,16 @@
-const admin = require('firebase-admin');
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 const serviceAccount = require('../serviceAccountKey.json');
 
 // Initialize Firebase Admin
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+initializeApp({
+  credential: cert(serviceAccount)
 });
 
-const db = admin.firestore();
+const db = getFirestore();
 
 // Function to make a user an admin
 async function makeUserAdmin(email) {
@@ -16,7 +20,7 @@ async function makeUserAdmin(email) {
     const snapshot = await usersRef.where('email', '==', email).get();
 
     if (snapshot.empty) {
-      console.log('No user found with that email');
+      console.log('No user found with email:', email);
       process.exit(1);
     }
 
@@ -24,7 +28,7 @@ async function makeUserAdmin(email) {
     const userDoc = snapshot.docs[0];
     await userDoc.ref.update({
       isAdmin: true,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: new Date().toISOString()
     });
 
     console.log(`Successfully made user ${email} an admin`);
