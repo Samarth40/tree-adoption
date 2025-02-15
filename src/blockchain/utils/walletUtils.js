@@ -1,5 +1,5 @@
 import { PetraWallet } from 'petra-plugin-wallet-adapter';
-import { provider } from '../config/aptosConfig';
+import { aptos } from '../config/aptosConfig';
 
 // Initialize Petra wallet
 const wallet = new PetraWallet();
@@ -29,7 +29,9 @@ export const disconnectWallet = async () => {
 // Get wallet balance
 export const getWalletBalance = async (address) => {
   try {
-    const resources = await provider.getAccountResources(address);
+    const resources = await aptos.getAccountResources({
+      accountAddress: address
+    });
     const aptosCoin = resources.find(r => r.type === '0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>');
     return aptosCoin?.data?.coin?.value || '0';
   } catch (error) {

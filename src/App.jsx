@@ -16,6 +16,7 @@ import PrivateRoute from './components/PrivateRoute';
 import { useAuth } from './contexts/AuthContext';
 import UserProfile from './components/UserProfile';
 import AdoptionSuccessPage from './pages/AdoptionSuccessPage';
+import NFTDashboard from './pages/NFTDashboard';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -112,6 +113,11 @@ function App() {
                   <Route path="/dashboard" element={
                     <PrivateRoute>
                       <DashboardPage />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/nft" element={
+                    <PrivateRoute>
+                      <NFTDashboard />
                     </PrivateRoute>
                   } />
                   <Route path="/profile" element={

@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { connectWallet, isWalletConnected } from '../../blockchain/utils/walletUtils';
+import { connectWallet, isWalletConnected, getWallet } from '../../blockchain/utils/walletUtils';
 import { mintTreeNFT } from '../../blockchain/services/nftService';
 
 const NFTMinting = ({ tree, onSuccess }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [mintingStatus, setMintingStatus] = useState('idle');
+
+    if (!tree) {
+        return (
+            <div className="bg-white rounded-xl shadow-lg p-6">
+                <div className="text-center">
+                    <h3 className="text-2xl font-bold text-forest-green mb-2">
+                        No Tree Selected
+                    </h3>
+                    <p className="text-gray-600">
+                        Please select a tree to mint as an NFT
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     const handleMint = async () => {
         try {
@@ -20,8 +35,19 @@ const NFTMinting = ({ tree, onSuccess }) => {
                 await connectWallet();
             }
 
+            const wallet = getWallet();
+            if (!wallet) {
+                throw new Error('Wallet not connected');
+            }
+
+            // Verify we have an account
+            const account = await wallet.account();
+            if (!account) {
+                throw new Error('No account found in wallet. Please connect your wallet first.');
+            }
+
             setMintingStatus('minting');
-            const result = await mintTreeNFT(tree);
+            const result = await mintTreeNFT(tree, wallet);
 
             setMintingStatus('success');
             onSuccess?.(result);
@@ -54,7 +80,7 @@ const NFTMinting = ({ tree, onSuccess }) => {
             <div className="space-y-4">
                 <div className="bg-cream/30 rounded-lg p-4">
                     <h4 className="font-medium text-gray-900 mb-2">Tree Details</h4>
-                    <p className="text-gray-600">Species: {tree.scientific_name}</p>
+                    <p className="text-gray-600">Species: {tree.scientific_name || 'Not specified'}</p>
                     <p className="text-gray-600">Location: {tree.location?.address || 'Community Garden, Delhi'}</p>
                 </div>
 

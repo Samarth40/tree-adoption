@@ -40,6 +40,7 @@ const Navbar = () => {
 
   const privateNavItems = [
     { label: 'My Trees', path: '/dashboard' },
+    { label: 'NFT Dashboard', path: '/nft' },
     { label: 'Community', path: '/community' },
   ];
 
