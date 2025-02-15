@@ -57,30 +57,55 @@ export const uploadNFTMetadata = async (metadata) => {
 export const getNFTMetadata = async (url) => {
     try {
         console.log('Fetching metadata from URL:', url);
+        
+        if (!url) {
+            console.error('Invalid metadata URL:', url);
+            throw new Error('Invalid metadata URL');
+        }
+
         const response = await axios.get(url);
-        console.log('Received metadata response:', response.data);
+        console.log('Raw metadata response:', response);
+        console.log('Received metadata:', response.data);
 
         // Ensure the metadata has the required structure
         const metadata = response.data;
         if (!metadata) {
+            console.error('No metadata received from URL:', url);
             throw new Error('No metadata received');
         }
 
+        // Log the metadata structure
+        console.log('Metadata structure:', {
+            hasName: !!metadata.name,
+            hasDescription: !!metadata.description,
+            hasImage: !!metadata.image,
+            hasAttributes: Array.isArray(metadata.attributes),
+            hasCreatedAt: !!metadata.created_at
+        });
+
         // Return a properly structured metadata object
-        return {
+        const structuredMetadata = {
             name: metadata.name || 'Unnamed NFT',
             description: metadata.description || 'No description available',
             image: metadata.image || '',
             attributes: Array.isArray(metadata.attributes) ? metadata.attributes : [],
             created_at: metadata.created_at || new Date().toISOString()
         };
+
+        console.log('Returning structured metadata:', structuredMetadata);
+        return structuredMetadata;
     } catch (error) {
         console.error('Error getting NFT metadata:', error);
         console.error('Failed URL:', url);
         if (error.response) {
             console.error('Error response:', error.response.data);
+            console.error('Error status:', error.response.status);
+            console.error('Error headers:', error.response.headers);
         }
-        throw new Error('Failed to get NFT metadata: ' + error.message);
+        if (error.request) {
+            console.error('Error request:', error.request);
+        }
+        throw new Error(`Failed to get NFT metadata: ${error.message}`);
     }
 };
 
@@ -115,5 +140,69 @@ export const uploadNFTImage = async (imageFile) => {
     } catch (error) {
         console.error('Error uploading NFT image:', error);
         throw new Error(`Failed to upload NFT image: ${error.message}`);
+    }
+};
+
+// Delete NFT metadata and image from Cloudinary
+export const deleteNFTAssets = async (metadata) => {
+    try {
+        if (!metadata) {
+            throw new Error('Metadata is required for deletion');
+        }
+
+        console.log('Deleting NFT assets from Cloudinary:', {
+            metadata_uri: metadata.metadata_uri,
+            image: metadata.image
+        });
+
+        // Extract public IDs from URLs
+        const getPublicId = (url) => {
+            try {
+                const urlParts = url.split('/');
+                const filename = urlParts[urlParts.length - 1];
+                return filename.split('.')[0]; // Remove file extension
+            } catch (error) {
+                console.error('Error extracting public ID from URL:', error);
+                return null;
+            }
+        };
+
+        const deletePromises = [];
+
+        // Delete metadata file
+        if (metadata.metadata_uri) {
+            const metadataPublicId = getPublicId(metadata.metadata_uri);
+            if (metadataPublicId) {
+                deletePromises.push(
+                    axios.post(`${SERVER_URL}/api/delete`, {
+                        public_id: metadataPublicId,
+                        resource_type: 'raw'
+                    })
+                );
+            }
+        }
+
+        // Delete image file
+        if (metadata.image) {
+            const imagePublicId = getPublicId(metadata.image);
+            if (imagePublicId) {
+                deletePromises.push(
+                    axios.post(`${SERVER_URL}/api/delete`, {
+                        public_id: imagePublicId,
+                        resource_type: 'image'
+                    })
+                );
+            }
+        }
+
+        if (deletePromises.length > 0) {
+            const results = await Promise.all(deletePromises);
+            console.log('Cloudinary deletion results:', results);
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting NFT assets:', error);
+        throw new Error(`Failed to delete NFT assets: ${error.message}`);
     }
 }; 

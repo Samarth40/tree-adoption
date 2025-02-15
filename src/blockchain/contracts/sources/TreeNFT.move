@@ -125,6 +125,43 @@ module tree_adoption::tree_nft {
         );
     }
 
+    public entry fun burn_tree_nft(
+        owner: &signer,
+        tree_id: String
+    ) acquires TreeNFTCollection {
+        let owner_addr = signer::address_of(owner);
+        
+        // Get the collection
+        let collection = borrow_global_mut<TreeNFTCollection>(@tree_adoption);
+        
+        // Find and remove the NFT
+        let found = false;
+        let len = vector::length(&collection.minted_trees);
+        let i = 0;
+        while (i < len) {
+            let nft = vector::borrow(&collection.minted_trees, i);
+            if (nft.tree_id == tree_id) {
+                assert!(nft.owner == owner_addr, error::permission_denied(ENOT_AUTHORIZED));
+                vector::remove(&mut collection.minted_trees, i);
+                found = true;
+                break
+            };
+            i = i + 1;
+        };
+        assert!(found, error::not_found(ETREE_NOT_FOUND));
+
+        // Emit transfer event to burn address
+        event::emit_event(
+            &mut collection.transfer_events,
+            TransferTreeNFTEvent {
+                tree_id: tree_id,
+                from: owner_addr,
+                to: @0x0,
+                timestamp: timestamp::now_seconds(),
+            }
+        );
+    }
+
     #[view]
     public fun get_tree_nft(tree_id: String): (address, u64, u64) acquires TreeNFTCollection {
         let collection = borrow_global<TreeNFTCollection>(@tree_adoption);

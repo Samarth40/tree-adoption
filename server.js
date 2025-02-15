@@ -135,6 +135,44 @@ app.post('/api/upload', async (req, res) => {
     }
 });
 
+// Cloudinary delete endpoint
+app.post('/api/delete', async (req, res) => {
+    try {
+        const { public_id, resource_type = 'image' } = req.body;
+        
+        console.log('Received delete request for:', {
+            public_id,
+            resource_type
+        });
+
+        if (!public_id) {
+            return res.status(400).json({ error: 'Public ID is required' });
+        }
+
+        // Delete from Cloudinary
+        const result = await cloudinary.uploader.destroy(public_id, {
+            resource_type: resource_type
+        });
+
+        console.log('Cloudinary delete result:', result);
+
+        if (result.result !== 'ok') {
+            throw new Error(`Failed to delete from Cloudinary: ${result.result}`);
+        }
+
+        res.json({
+            success: true,
+            result: result
+        });
+    } catch (error) {
+        console.error('Error deleting from Cloudinary:', error);
+        res.status(500).json({
+            error: 'Failed to delete from Cloudinary',
+            details: error.message
+        });
+    }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.json({ status: 'healthy' });

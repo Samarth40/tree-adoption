@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getNFTCollection, deleteTreeNFT } from '../../blockchain/services/nftService';
-import { getNFTMetadata } from '../../blockchain/services/cloudinaryService';
+import { getNFTMetadata, deleteNFTAssets } from '../../blockchain/services/cloudinaryService';
 import { isWalletConnected, getWallet } from '../../blockchain/utils/walletUtils';
 import { FaTrash, FaLeaf, FaMapMarkerAlt, FaCloudSun } from 'react-icons/fa';
 
 const NFTCard = ({ nft, onDelete, isDeleting }) => {
+    const [imageError, setImageError] = useState(false);
+    
     return (
         <motion.div
             layout
@@ -21,12 +23,12 @@ const NFTCard = ({ nft, onDelete, isDeleting }) => {
             <div className="relative h-64 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                 <img
-                    src={nft.metadata.image}
+                    src={imageError ? '/placeholder-tree.jpg' : nft.metadata.image}
                     alt={nft.metadata.name}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
-                        e.target.src = '/placeholder-tree.jpg';
-                        console.log('Error loading image for NFT:', nft.tree_id);
+                        console.log('Image load error for NFT:', nft.tree_id);
+                        setImageError(true);
                     }}
                 />
                 {/* Delete button */}
@@ -135,7 +137,10 @@ const NFTCollection = () => {
                     }
 
                     const metadata = await getNFTMetadata(nft.metadata_uri);
-                    console.log('Received metadata for NFT:', nft.tree_id, metadata);
+                    if (!metadata) {
+                        console.log('Skipping NFT due to missing metadata:', nft.tree_id);
+                        return null;
+                    }
 
                     return {
                         ...nft,
@@ -149,16 +154,7 @@ const NFTCollection = () => {
                     };
                 } catch (error) {
                     console.error('Error fetching metadata for NFT:', nft.tree_id, error);
-                    return {
-                        ...nft,
-                        metadata: {
-                            name: `Tree NFT #${nft.tree_id}`,
-                            description: 'Metadata temporarily unavailable',
-                            image: '/placeholder-tree.jpg',
-                            attributes: [],
-                            created_at: nft.created_at || new Date().toISOString()
-                        }
-                    };
+                    return null;
                 }
             });
 
@@ -187,7 +183,23 @@ const NFTCollection = () => {
                 throw new Error('Wallet not found');
             }
 
+            console.log('Starting NFT deletion process for:', nft);
+
+            // First, try to delete from Cloudinary
+            try {
+                await deleteNFTAssets({
+                    metadata_uri: nft.metadata_uri,
+                    image: nft.metadata.image
+                });
+                console.log('Successfully deleted NFT assets from Cloudinary');
+            } catch (cloudinaryError) {
+                console.error('Error deleting from Cloudinary:', cloudinaryError);
+                // Continue with blockchain deletion even if Cloudinary deletion fails
+            }
+
+            // Then, delete from blockchain
             await deleteTreeNFT(nft.tree_id, wallet);
+            console.log('Successfully deleted NFT from blockchain');
             
             // Remove the deleted NFT from the state with animation
             setNfts(prevNfts => prevNfts.filter(n => n.tree_id !== nft.tree_id));

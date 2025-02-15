@@ -84,7 +84,7 @@ export const mintTreeNFT = async (treeData, wallet) => {
             }
             console.log('Sender address:', account.address);
 
-            // 3. Create the transaction payload
+            // 3. Create the transaction payload for minting
             const payload = {
                 function: `${contractAddress}::tree_nft::mint_tree_nft`,
                 type_arguments: [],
@@ -179,15 +179,27 @@ export const getNFTCollection = async (address) => {
         const mintedTrees = nftResource.data.minted_trees || [];
         console.log('Found minted trees:', mintedTrees);
 
-        // Transform the minted trees into the expected format
-        const nfts = mintedTrees.map(tree => ({
-            tree_id: tree.tree_id,
-            metadata_uri: tree.metadata_uri,
-            owner: tree.owner,
-            created_at: tree.created_at || new Date().toISOString()
-        }));
+        // Burn address to filter out burned NFTs
+        const burnAddress = "0x0";
+        const zeroAddress = "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+        // Transform the minted trees into the expected format and filter out burned NFTs
+        const nfts = mintedTrees
+            .filter(tree => {
+                const isNotBurned = tree.owner !== burnAddress && tree.owner !== zeroAddress;
+                if (!isNotBurned) {
+                    console.log('Filtering out burned NFT:', tree.tree_id);
+                }
+                return isNotBurned;
+            })
+            .map(tree => ({
+                tree_id: tree.tree_id,
+                metadata_uri: tree.metadata_uri,
+                owner: tree.owner,
+                created_at: tree.created_at || new Date().toISOString()
+            }));
         
-        console.log('Processed NFTs:', nfts);
+        console.log('Processed NFTs (excluding burned):', nfts);
         return nfts;
     } catch (error) {
         console.error('Error getting NFT collection:', error);
@@ -205,7 +217,7 @@ export const getNFTDetails = async (tokenId) => {
     try {
         const resource = await aptos.getAccountResource({
             accountAddress: NFT_CONTRACT_ADDRESS,
-            resourceType: `${NFT_CONTRACT_ADDRESS}::tree_nft::TreeNFT`
+            resourceType: `${NFT_CONTRACT_ADDRESS}::tree_adoption::tree_nft::TreeNFT`
         });
         
         const token = resource.data.tokens.find(t => t.id === tokenId);
@@ -216,7 +228,7 @@ export const getNFTDetails = async (tokenId) => {
     }
 };
 
-// Delete NFT (by transferring to burn address)
+// Delete NFT (by burning it)
 export const deleteTreeNFT = async (treeId, wallet) => {
     try {
         if (!wallet) {
@@ -229,6 +241,7 @@ export const deleteTreeNFT = async (treeId, wallet) => {
 
         console.log('Starting NFT deletion process...');
         console.log('Contract address:', contractAddress);
+        console.log('Tree ID to delete:', treeId);
         
         // Get the wallet account
         const account = await wallet.account();
@@ -237,43 +250,83 @@ export const deleteTreeNFT = async (treeId, wallet) => {
         }
         console.log('Sender address:', account.address);
 
-        // Burn address (address with all zeros)
-        const burnAddress = "0x0000000000000000000000000000000000000000000000000000000000000000";
+        // First verify the NFT exists and is owned by the sender
+        const collection = await getNFTCollection(account.address);
+        const nftToDelete = collection.find(nft => nft.tree_id === treeId);
+        
+        if (!nftToDelete) {
+            throw new Error('NFT not found in your collection');
+        }
 
-        // Create the transaction payload for transferring the NFT to burn address
+        // Convert addresses to lowercase for comparison
+        const ownerAddress = nftToDelete.owner.toLowerCase();
+        const senderAddress = account.address.toLowerCase();
+        
+        console.log('NFT owner address:', ownerAddress);
+        console.log('Sender address:', senderAddress);
+
+        if (ownerAddress !== senderAddress) {
+            throw new Error(`You do not own this NFT. Owner: ${ownerAddress}, Sender: ${senderAddress}`);
+        }
+
+        // Create the transaction payload for burning the NFT
         const payload = {
             function: `${contractAddress}::tree_nft::transfer_tree_nft`,
             type_arguments: [],
-            arguments: [burnAddress, String(treeId)] // The Move function expects (to: address, tree_id: String)
+            arguments: ["0x0000000000000000000000000000000000000000000000000000000000000000", treeId]
         };
 
-        console.log('Deleting NFT with payload:', {
+        console.log('Burning NFT with payload:', {
             function: payload.function,
             arguments: payload.arguments,
-            treeId: treeId
+            treeId: treeId,
+            from: account.address
         });
 
-        // Generate, sign, and submit transaction
-        const pendingTxn = await wallet.signAndSubmitTransaction({
-            payload: payload
-        });
-        console.log('Transaction submitted:', pendingTxn);
+        try {
+            // Generate, sign, and submit transaction
+            console.log('Submitting burn transaction...');
+            const pendingTxn = await wallet.signAndSubmitTransaction({
+                payload: payload
+            });
+            console.log('Transaction submitted:', pendingTxn);
 
-        if (!pendingTxn?.hash) {
-            throw new Error('Transaction hash is missing from wallet response');
+            if (!pendingTxn?.hash) {
+                throw new Error('Transaction hash is missing from wallet response');
+            }
+
+            // Wait for transaction confirmation
+            console.log('Waiting for transaction confirmation with hash:', pendingTxn.hash);
+            const txResult = await aptos.waitForTransaction({
+                transactionHash: pendingTxn.hash
+            });
+            console.log('Transaction confirmed:', txResult);
+
+            // Try to delete from Cloudinary after successful blockchain deletion
+            if (nftToDelete.metadata_uri) {
+                try {
+                    await deleteNFTAssets({
+                        metadata_uri: nftToDelete.metadata_uri,
+                        image: nftToDelete.metadata?.image
+                    });
+                    console.log('Successfully deleted NFT assets from Cloudinary');
+                } catch (cloudinaryError) {
+                    console.warn('Failed to delete from Cloudinary, but NFT was burned:', cloudinaryError);
+                }
+            }
+
+            return {
+                success: true,
+                transactionHash: pendingTxn.hash
+            };
+        } catch (txError) {
+            console.error('Detailed transaction error:', {
+                message: txError.message,
+                data: txError.data,
+                stack: txError.stack
+            });
+            throw new Error(`Transaction failed: ${txError.message}`);
         }
-
-        // Wait for transaction confirmation
-        console.log('Waiting for transaction confirmation with hash:', pendingTxn.hash);
-        const txResult = await aptos.waitForTransaction({
-            transactionHash: pendingTxn.hash
-        });
-        console.log('Transaction confirmed:', txResult);
-
-        return {
-            success: true,
-            transactionHash: pendingTxn.hash
-        };
     } catch (error) {
         console.error('Error deleting NFT:', error);
         console.error('Error details:', {
