@@ -59,4 +59,9 @@ dist-ssr
 # Firebase
 serviceAccountKey.json
 .firebase/
-firebase-debug.log 
+firebase-debug.log
+
+# Aptos
+aptos.exe
+deployment-key.json
+temp_package/ 
