@@ -1,7 +1,8 @@
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+const API_BASE_URL = 'http://localhost:5000';
 
-// Upload metadata to Cloudinary directly
+// Upload metadata to Cloudinary
 export const uploadNFTMetadata = async (metadata) => {
     try {
         console.log('Preparing metadata for upload:', metadata);
@@ -20,29 +21,37 @@ export const uploadNFTMetadata = async (metadata) => {
 
         console.log('Cleaned metadata:', cleanedMetadata);
 
-        // Create a blob from the metadata
-        const blob = new Blob([JSON.stringify(cleanedMetadata)], {
-            type: 'application/json'
+        // Use our backend API endpoint with the correct base URL
+        const response = await fetch(`${API_BASE_URL}/api/upload`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                data: cleanedMetadata,
+                resource_type: 'raw',
+                format: 'json'
+            })
         });
 
-        // Create form data
-        const formData = new FormData();
-        formData.append('file', blob);
-        formData.append('upload_preset', UPLOAD_PRESET);
-        formData.append('folder', 'tree_nfts');
+        console.log('Upload response status:', response.status);
 
-        // Upload directly to Cloudinary
-        const response = await fetch(
-            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`,
-            {
-                method: 'POST',
-                body: formData
-            }
-        );
+        const responseText = await response.text();
+        console.log('Raw response:', responseText);
 
-        const result = await response.json();
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error('Error parsing response:', parseError);
+            throw new Error(`Failed to parse server response: ${responseText}`);
+        }
 
-        if (!result || !result.secure_url) {
+        if (!response.ok) {
+            throw new Error(`Upload failed: ${result.error || 'Unknown error'}`);
+        }
+
+        if (!result || !result.url) {
             throw new Error('Upload failed: No URL returned');
         }
 
@@ -50,8 +59,8 @@ export const uploadNFTMetadata = async (metadata) => {
 
         return {
             success: true,
-            url: result.secure_url,
-            publicId: result.public_id
+            url: result.url,
+            publicId: result.publicId
         };
     } catch (error) {
         console.error('Error uploading NFT metadata:', error);
@@ -97,31 +106,52 @@ export const getNFTMetadata = async (url) => {
 // Upload NFT image to Cloudinary directly
 export const uploadNFTImage = async (imageFile) => {
     try {
-        // Create form data
-        const formData = new FormData();
-        formData.append('file', imageFile);
-        formData.append('upload_preset', UPLOAD_PRESET);
-        formData.append('folder', 'tree_nfts');
+        // Convert image file to base64
+        const reader = new FileReader();
+        const base64Promise = new Promise((resolve, reject) => {
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+        });
+        reader.readAsDataURL(imageFile);
+        const base64Data = await base64Promise;
 
-        // Upload directly to Cloudinary
-        const response = await fetch(
-            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-            {
-                method: 'POST',
-                body: formData
-            }
-        );
+        // Use our backend API endpoint with the correct base URL
+        const response = await fetch(`${API_BASE_URL}/api/upload`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                data: base64Data,
+                resource_type: 'image'
+            })
+        });
 
-        const result = await response.json();
+        console.log('Upload response status:', response.status);
 
-        if (!result || !result.secure_url) {
+        const responseText = await response.text();
+        console.log('Raw response:', responseText);
+
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error('Error parsing response:', parseError);
+            throw new Error(`Failed to parse server response: ${responseText}`);
+        }
+
+        if (!response.ok) {
+            throw new Error(`Upload failed: ${result.error || 'Unknown error'}`);
+        }
+
+        if (!result || !result.url) {
             throw new Error('Failed to upload image');
         }
 
         return {
             success: true,
-            url: result.secure_url,
-            publicId: result.public_id
+            url: result.url,
+            publicId: result.publicId
         };
     } catch (error) {
         console.error('Error uploading NFT image:', error);
@@ -129,20 +159,35 @@ export const uploadNFTImage = async (imageFile) => {
     }
 };
 
-// For deletion, we'll mark assets as inactive since we can't do direct deletion without API secret
+// For deletion, we'll use our backend API
 export const deleteNFTAssets = async (metadata) => {
     try {
         if (!metadata) {
             throw new Error('Metadata is required for deletion');
         }
 
-        console.log('Marking NFT assets as deleted:', {
+        console.log('Deleting NFT assets:', {
             metadata_uri: metadata.metadata_uri,
             image: metadata.image
         });
 
-        // Since we can't directly delete from Cloudinary without the API secret,
-        // we'll just return success and let the blockchain handle the NFT state
+        // Use our backend API endpoint with the correct base URL
+        const response = await fetch(`${API_BASE_URL}/api/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                public_id: metadata.metadata_uri,
+                resource_type: 'raw'
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Delete failed: ${errorData.error || 'Unknown error'}`);
+        }
+
         return { success: true };
     } catch (error) {
         console.error('Error handling NFT assets deletion:', error);

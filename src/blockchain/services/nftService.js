@@ -15,10 +15,13 @@ const createNFTMetadata = (tree) => {
     const description = tree.scientific_name ? 
         `Digital certificate of adoption for ${tree.scientific_name}` : 
         'Digital certificate of tree adoption';
-    const image = tree.images?.primary || tree.image || null;
+    
+    // More flexible image path handling
+    const image = tree.images?.primary || tree.image || tree.imageUrl || tree.image_url || null;
 
     if (!image) {
-        throw new Error('Tree image is required');
+        console.error('Tree data:', tree);
+        throw new Error('Tree image is required. Please provide an image URL in one of these formats: images.primary, image, imageUrl, or image_url');
     }
 
     return {

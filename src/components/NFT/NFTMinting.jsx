@@ -29,6 +29,25 @@ const NFTMinting = ({ tree, onSuccess }) => {
             setError(null);
             setMintingStatus('connecting');
 
+            // Validate tree data
+            if (!tree) {
+                throw new Error('Tree data is missing');
+            }
+
+            // Log tree data for debugging
+            console.log('Tree data for minting:', {
+                tree_id: tree.id,
+                scientific_name: tree.scientific_name,
+                image: tree.image || tree.images?.primary || tree.imageUrl || tree.image_url,
+                has_images: !!tree.images,
+                has_primary_image: !!tree.images?.primary
+            });
+
+            // Check if tree has image
+            if (!tree.image && !tree.images?.primary && !tree.imageUrl && !tree.image_url) {
+                throw new Error('Tree image is required. Please upload an image first.');
+            }
+
             // Check wallet connection
             const connected = await isWalletConnected();
             if (!connected) {
