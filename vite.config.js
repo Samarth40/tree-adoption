@@ -10,7 +10,7 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'react-vendor';
+            if (id.includes('react') || id.includes('framer-motion')) return 'react-vendor';
             if (id.includes('firebase')) return 'firebase-vendor';
             if (id.includes('petra')) return 'petra-vendor';
             return 'vendor';
@@ -21,7 +21,10 @@ export default defineConfig({
     sourcemap: true,
     chunkSizeWarningLimit: 1600
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'framer-motion']
+  },
   server: {
     port: 3000
   }
-}); 
+});
