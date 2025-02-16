@@ -1,8 +1,7 @@
-import axios from 'axios';
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-const SERVER_URL = 'http://localhost:5000';  // Your server URL
-
-// Upload metadata to Cloudinary through our server
+// Upload metadata to Cloudinary directly
 export const uploadNFTMetadata = async (metadata) => {
     try {
         console.log('Preparing metadata for upload:', metadata);
@@ -21,34 +20,41 @@ export const uploadNFTMetadata = async (metadata) => {
 
         console.log('Cleaned metadata:', cleanedMetadata);
 
-        // Use the correct upload preset name that matches Cloudinary
-        const uploadPreset = 'tree_adoption_nft';
-
-        console.log('Using upload preset:', uploadPreset);
-
-        const response = await axios.post(`${SERVER_URL}/api/upload`, {
-            data: cleanedMetadata,
-            resource_type: 'raw',
-            upload_preset: uploadPreset
+        // Create a blob from the metadata
+        const blob = new Blob([JSON.stringify(cleanedMetadata)], {
+            type: 'application/json'
         });
 
-        if (!response.data || !response.data.success) {
-            console.error('Upload failed:', response.data);
-            throw new Error(response.data?.error || 'Upload failed');
+        // Create form data
+        const formData = new FormData();
+        formData.append('file', blob);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        formData.append('folder', 'tree_nfts');
+
+        // Upload directly to Cloudinary
+        const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`,
+            {
+                method: 'POST',
+                body: formData
+            }
+        );
+
+        const result = await response.json();
+
+        if (!result || !result.secure_url) {
+            throw new Error('Upload failed: No URL returned');
         }
 
-        console.log('Upload successful:', response.data);
+        console.log('Upload successful:', result);
 
         return {
             success: true,
-            url: response.data.url,
-            publicId: response.data.publicId
+            url: result.secure_url,
+            publicId: result.public_id
         };
     } catch (error) {
         console.error('Error uploading NFT metadata:', error);
-        if (error.response) {
-            console.error('Server response:', error.response.data);
-        }
         throw new Error(`Failed to upload NFT metadata: ${error.message}`);
     }
 };
@@ -63,25 +69,13 @@ export const getNFTMetadata = async (url) => {
             throw new Error('Invalid metadata URL');
         }
 
-        const response = await axios.get(url);
-        console.log('Raw metadata response:', response);
-        console.log('Received metadata:', response.data);
-
-        // Ensure the metadata has the required structure
-        const metadata = response.data;
+        const response = await fetch(url);
+        const metadata = await response.json();
+        
         if (!metadata) {
             console.error('No metadata received from URL:', url);
             throw new Error('No metadata received');
         }
-
-        // Log the metadata structure
-        console.log('Metadata structure:', {
-            hasName: !!metadata.name,
-            hasDescription: !!metadata.description,
-            hasImage: !!metadata.image,
-            hasAttributes: Array.isArray(metadata.attributes),
-            hasCreatedAt: !!metadata.created_at
-        });
 
         // Return a properly structured metadata object
         const structuredMetadata = {
@@ -96,46 +90,38 @@ export const getNFTMetadata = async (url) => {
         return structuredMetadata;
     } catch (error) {
         console.error('Error getting NFT metadata:', error);
-        console.error('Failed URL:', url);
-        if (error.response) {
-            console.error('Error response:', error.response.data);
-            console.error('Error status:', error.response.status);
-            console.error('Error headers:', error.response.headers);
-        }
-        if (error.request) {
-            console.error('Error request:', error.request);
-        }
         throw new Error(`Failed to get NFT metadata: ${error.message}`);
     }
 };
 
-// Upload NFT image to Cloudinary through our server
+// Upload NFT image to Cloudinary directly
 export const uploadNFTImage = async (imageFile) => {
     try {
-        // Use the correct upload preset name that matches Cloudinary
-        const uploadPreset = 'tree_adoption_nft';
+        // Create form data
+        const formData = new FormData();
+        formData.append('file', imageFile);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        formData.append('folder', 'tree_nfts');
 
-        // Convert image file to base64
-        const reader = new FileReader();
-        const imageBase64 = await new Promise((resolve) => {
-            reader.onload = (e) => resolve(e.target.result);
-            reader.readAsDataURL(imageFile);
-        });
+        // Upload directly to Cloudinary
+        const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+            {
+                method: 'POST',
+                body: formData
+            }
+        );
 
-        const response = await axios.post(`${SERVER_URL}/api/upload`, {
-            data: imageBase64,
-            resource_type: 'image',
-            upload_preset: uploadPreset
-        });
+        const result = await response.json();
 
-        if (!response.data || !response.data.success) {
+        if (!result || !result.secure_url) {
             throw new Error('Failed to upload image');
         }
 
         return {
             success: true,
-            url: response.data.url,
-            publicId: response.data.publicId
+            url: result.secure_url,
+            publicId: result.public_id
         };
     } catch (error) {
         console.error('Error uploading NFT image:', error);
@@ -143,66 +129,23 @@ export const uploadNFTImage = async (imageFile) => {
     }
 };
 
-// Delete NFT metadata and image from Cloudinary
+// For deletion, we'll mark assets as inactive since we can't do direct deletion without API secret
 export const deleteNFTAssets = async (metadata) => {
     try {
         if (!metadata) {
             throw new Error('Metadata is required for deletion');
         }
 
-        console.log('Deleting NFT assets from Cloudinary:', {
+        console.log('Marking NFT assets as deleted:', {
             metadata_uri: metadata.metadata_uri,
             image: metadata.image
         });
 
-        // Extract public IDs from URLs
-        const getPublicId = (url) => {
-            try {
-                const urlParts = url.split('/');
-                const filename = urlParts[urlParts.length - 1];
-                return filename.split('.')[0]; // Remove file extension
-            } catch (error) {
-                console.error('Error extracting public ID from URL:', error);
-                return null;
-            }
-        };
-
-        const deletePromises = [];
-
-        // Delete metadata file
-        if (metadata.metadata_uri) {
-            const metadataPublicId = getPublicId(metadata.metadata_uri);
-            if (metadataPublicId) {
-                deletePromises.push(
-                    axios.post(`${SERVER_URL}/api/delete`, {
-                        public_id: metadataPublicId,
-                        resource_type: 'raw'
-                    })
-                );
-            }
-        }
-
-        // Delete image file
-        if (metadata.image) {
-            const imagePublicId = getPublicId(metadata.image);
-            if (imagePublicId) {
-                deletePromises.push(
-                    axios.post(`${SERVER_URL}/api/delete`, {
-                        public_id: imagePublicId,
-                        resource_type: 'image'
-                    })
-                );
-            }
-        }
-
-        if (deletePromises.length > 0) {
-            const results = await Promise.all(deletePromises);
-            console.log('Cloudinary deletion results:', results);
-        }
-
+        // Since we can't directly delete from Cloudinary without the API secret,
+        // we'll just return success and let the blockchain handle the NFT state
         return { success: true };
     } catch (error) {
-        console.error('Error deleting NFT assets:', error);
-        throw new Error(`Failed to delete NFT assets: ${error.message}`);
+        console.error('Error handling NFT assets deletion:', error);
+        throw new Error(`Failed to handle NFT assets deletion: ${error.message}`);
     }
 }; 

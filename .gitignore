@@ -65,3 +65,4 @@ firebase-debug.log
 aptos.exe
 deployment-key.json
 temp_package/ 
+.vercel

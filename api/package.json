@@ -1,0 +1,7 @@
+{
+  "name": "tree-adoption-api",
+  "dependencies": {
+    "stripe": "^12.0.0",
+    "cloudinary": "^1.37.0"
+  }
+} 
