@@ -8,19 +8,18 @@ export default defineConfig({
     assetsDir: 'assets',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: [
-            'react',
-            'react-dom',
-            'react-router-dom',
-            'petra-plugin-wallet-adapter',
-            '@firebase/firestore',
-            '@firebase/auth',
-            '@firebase/storage'
-          ]
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'react-vendor';
+            if (id.includes('firebase')) return 'firebase-vendor';
+            if (id.includes('petra')) return 'petra-vendor';
+            return 'vendor';
+          }
         }
       }
-    }
+    },
+    sourcemap: true,
+    chunkSizeWarningLimit: 1600
   },
   server: {
     port: 3000
