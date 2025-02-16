@@ -13,8 +13,10 @@ export default defineConfig({
             'react',
             'react-dom',
             'react-router-dom',
-            '@aptos-labs/wallet-adapter-react',
-            'cloudinary'
+            'petra-plugin-wallet-adapter',
+            '@firebase/firestore',
+            '@firebase/auth',
+            '@firebase/storage'
           ]
         }
       }
