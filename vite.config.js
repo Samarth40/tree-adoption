@@ -16,13 +16,20 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1600,
     target: 'esnext',
-    minify: 'esbuild'
+    minify: 'esbuild',
+    sourcemap: true
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion']
+    include: ['react', 'react-dom', 'framer-motion'],
+    esbuildOptions: {
+      target: 'esnext'
+    }
   },
   server: {
     port: 3000,
     open: true
+  },
+  esbuild: {
+    target: 'esnext'
   }
 });
