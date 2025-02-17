@@ -9,6 +9,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,7 +40,6 @@ const Navbar = () => {
   ];
 
   const privateNavItems = [
-    { label: 'My Trees', path: '/dashboard' },
     { label: 'NFT Dashboard', path: '/nft' },
     { label: 'Community', path: '/community' },
   ];
@@ -98,16 +98,99 @@ const Navbar = () => {
           {/* Auth Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
             {currentUser ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">
-                  {currentUser.email}
-                </span>
+              <div className="relative group">
                 <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 rounded-lg bg-forest-green text-white text-sm font-medium hover:bg-forest-green/90 transition-colors"
+                  className="flex items-center space-x-2 text-white hover:text-cream transition-colors duration-300"
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                 >
-                  Logout
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-leaf-green to-sage-green flex items-center justify-center">
+                    <span className="text-white font-medium">{currentUser.email.split('@')[0].charAt(0).toUpperCase()}</span>
+                  </div>
+                  <motion.div
+                    animate={{ rotate: isProfileMenuOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <svg 
+                      className="w-4 h-4 text-white" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </motion.div>
                 </button>
+                
+                {/* Dropdown Menu */}
+                <AnimatePresence>
+                  {isProfileMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute right-0 mt-2 w-64 bg-gradient-to-b from-white to-cream rounded-lg shadow-lg py-2"
+                    >
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.1 }}
+                        className="px-4 py-2 border-b border-forest-green/10"
+                      >
+                        <p className="font-medium text-forest-green truncate">{currentUser.email.split('@')[0]}</p>
+                        <p className="text-sm text-sage-green truncate" title={currentUser.email}>{currentUser.email}</p>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.15 }}
+                      >
+                        <Link
+                          to="/profile"
+                          className="flex items-center px-4 py-2 text-forest-green hover:bg-forest-green/5 transition-colors duration-200"
+                          onClick={() => setIsProfileMenuOpen(false)}
+                        >
+                          <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                          Profile
+                        </Link>
+                        <Link
+                          to="/dashboard"
+                          className="flex items-center px-4 py-2 text-forest-green hover:bg-forest-green/5 transition-colors duration-200"
+                          onClick={() => setIsProfileMenuOpen(false)}
+                        >
+                          <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M12 3c-1.5 0-2.5 1-3.5 2.5C7 7.5 6 9 6 11c0 3 2.5 5 6 5s6-2 6-5c0-2-1-3.5-2.5-5.5C14.5 4 13.5 3 12 3zM12 16v5"
+                            />
+                          </svg>
+                          My Trees
+                        </Link>
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            setIsProfileMenuOpen(false);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50 transition-colors duration-200"
+                        >
+                          <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
+                          Log out
+                        </button>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <>
@@ -186,7 +269,7 @@ const Navbar = () => {
               <div className="pt-4 space-y-3">
                 {currentUser ? (
                   <div className="px-4 py-3">
-                    <div className="text-sm text-gray-600 mb-2">
+                    <div className="text-sm text-white mb-2">
                       {currentUser.email}
                     </div>
                     <button
@@ -226,4 +309,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
