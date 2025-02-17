@@ -5,6 +5,7 @@ import { db } from '../config/firebase';
 import { collection, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 import TreeEnrichmentService from '../services/treeEnrichmentService';
 import { Link, useNavigate } from 'react-router-dom';
+import TreeChatbot from '../components/TreeChatbot';
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('my-trees');
@@ -14,6 +15,7 @@ const DashboardPage = () => {
   const [userData, setUserData] = useState(null);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const [activeTree, setActiveTree] = useState(null);
 
   useEffect(() => {
     const fetchUserDataAndTrees = async () => {
@@ -395,13 +397,18 @@ const DashboardPage = () => {
                             </div>
                           </div>
 
-                          {/* Add Mint NFT button */}
-                          <div className="mt-6 flex justify-end">
+                          <div className="mt-6 flex justify-between items-center">
                             <button
                               onClick={() => handleMintNFT(tree)}
-                              className="bg-forest-green text-white px-6 py-3 rounded-xl hover:bg-forest-green/90 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                              className="bg-forest-green text-white px-4 py-2 rounded-lg hover:bg-forest-green/90 transition-colors"
                             >
-                              <span>Mint NFT</span>
+                              Mint NFT
+                            </button>
+                            <button
+                              onClick={() => navigate('/tree-chat', { state: { tree } })}
+                              className="bg-leaf-green text-white px-4 py-2 rounded-lg hover:bg-leaf-green/90 transition-colors flex items-center gap-2"
+                            >
+                              <span>Chat with Tree</span>
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
                               </svg>

@@ -20,6 +20,7 @@ import NFTDashboard from './pages/NFTDashboard';
 import Volunteer from './pages/Volunteer';
 import Partner from './pages/Partner';
 import Donate from './pages/Donate';
+import TreeChatPage from './pages/TreeChatPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -131,6 +132,13 @@ function App() {
                   <Route path="/volunteer" element={<Volunteer />} />
                   <Route path="/partner" element={<Partner />} />
                   <Route path="/donate" element={<Donate />} />
+                  
+                  {/* Tree Chat Route */}
+                  <Route path="/tree-chat" element={
+                    <PrivateRoute>
+                      <TreeChatPage />
+                    </PrivateRoute>
+                  } />
                   
                   {/* Fallback Route */}
                   <Route path="*" element={<Navigate to="/" />} />
