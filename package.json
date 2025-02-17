@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "vercel-build": "vite build",
+    "vercel-build": "cross-env npm_config_platform=linux npm_config_arch=x64 npm install @rollup/rollup-linux-x64-gnu && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "download-trees": "node src/scripts/downloadTreeData.js",
@@ -43,6 +43,8 @@
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-icons": "^5.4.0",
+    "react-intersection-observer": "^9.15.1",
+    "react-minimal-pie-chart": "^9.1.0",
     "react-router-dom": "^7.1.5",
     "stripe": "^17.6.0",
     "web3.storage": "^4.5.5"
@@ -53,6 +55,7 @@
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
     "eslint": "^9.19.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.0.0",

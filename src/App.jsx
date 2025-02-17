@@ -17,6 +17,9 @@ import { useAuth } from './contexts/AuthContext';
 import UserProfile from './components/UserProfile';
 import AdoptionSuccessPage from './pages/AdoptionSuccessPage';
 import NFTDashboard from './pages/NFTDashboard';
+import Volunteer from './pages/Volunteer';
+import Partner from './pages/Partner';
+import Donate from './pages/Donate';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -125,6 +128,9 @@ function App() {
                       <UserProfile />
                     </PrivateRoute>
                   } />
+                  <Route path="/volunteer" element={<Volunteer />} />
+                  <Route path="/partner" element={<Partner />} />
+                  <Route path="/donate" element={<Donate />} />
                   
                   {/* Fallback Route */}
                   <Route path="*" element={<Navigate to="/" />} />

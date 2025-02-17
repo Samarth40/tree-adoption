@@ -8,23 +8,21 @@ export default defineConfig({
     assetsDir: 'assets',
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('framer-motion')) return 'react-vendor';
-            if (id.includes('firebase')) return 'firebase-vendor';
-            if (id.includes('petra')) return 'petra-vendor';
-            return 'vendor';
-          }
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'animation-vendor': ['framer-motion']
         }
       }
     },
-    sourcemap: true,
-    chunkSizeWarningLimit: 1600
+    chunkSizeWarningLimit: 1600,
+    target: 'esnext',
+    minify: 'esbuild'
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'framer-motion']
   },
   server: {
-    port: 3000
+    port: 3000,
+    open: true
   }
 });
