@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { db } from '../config/firebase';
 import { collection, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 import TreeEnrichmentService from '../services/treeEnrichmentService';
+import DashboardTreeEnrichmentService from '../services/dashboardTreeEnrichmentService';
 import { Link, useNavigate } from 'react-router-dom';
 import TreeChatbot from '../components/TreeChatbot';
 
@@ -76,102 +77,76 @@ const DashboardPage = () => {
           const adoptionData = adoptionDoc.data();
           console.log('Processing adoption:', adoptionDoc.id, adoptionData);
           
-          // Format tree ID - convert scientific name to valid Firestore ID
-          let formattedTreeId = adoptionData.treeId;
-          if (formattedTreeId && formattedTreeId.includes(' ')) {
-            formattedTreeId = formattedTreeId
-              .toLowerCase()
-              .replace(/\s+/g, '_')
-              .replace(/[^a-z0-9_]/g, '')
-              .slice(0, 30) + '_01';
-          }
+          // Get enriched data from AI service
+          const enrichedData = await DashboardTreeEnrichmentService.enrichDashboardTree(
+            adoptionData.species || adoptionData.scientific_name || 'Unknown species'
+          );
+          console.log('Enriched tree data:', enrichedData);
           
-          // Fetch associated tree data
-          const treeRef = doc(db, 'trees', formattedTreeId || 'neem_tree_01');
-          console.log('Fetching tree data from:', treeRef.path);
-          const treeSnap = await getDoc(treeRef);
+          // Get the image URL from adoption data
+          let imageUrl = null;
           
-          if (treeSnap.exists()) {
-            const treeData = treeSnap.data();
-            console.log('Found tree data:', treeData);
-            adoptionsData.push({
-              id: adoptionDoc.id,
-              scientific_name: treeData.species?.scientific_name || adoptionData.species,
-              common_names: {
-                english: treeData.species?.common_name || adoptionData.treeName || 'Neem',
-                local: treeData.species?.local_names?.hindi || 'नीम'
-              },
-              family: treeData.species?.family || 'Unknown',
-              location: treeData.location?.address || adoptionData.location || 'Community Garden, Delhi',
-              health: treeData.health_metrics?.overall_health || adoptionData.health || "Excellent",
-              lastMaintenance: adoptionData.lastMaintenance?.toDate?.() 
-                ? adoptionData.lastMaintenance.toDate().toLocaleDateString()
-                : new Date().toLocaleDateString(),
-              images: treeData.images || {
-                primary: 'https://images.unsplash.com/photo-1610847499832-918a1c3c6813'
-              },
-              progress: treeData.health_metrics?.growth_progress || adoptionData.progress || 85,
-              characteristics: treeData.characteristics || {
-                height: { current: 12, potential: 35 },
-                growth_rate: 'Fast',
-                soil_preference: 'Well-draining soil',
-                water_needs: 'Low to Moderate'
-              },
-              uses: {
-                medicinal: treeData.cultural_significance?.medicinal_uses || [],
-                environmental: [
-                  `CO2 absorption: ${treeData.characteristics?.environmental_benefits?.co2_absorption_rate || 52}kg per year`,
-                  `Water conservation: ${treeData.characteristics?.environmental_benefits?.water_conservation || 150}L per month`,
-                  'Supports wildlife habitat'
-                ]
-              },
-              care_guidelines: treeData.care_requirements || {
-                watering: 'Water deeply but infrequently',
-                pruning: 'Annual pruning in early spring',
-                fertilization: 'Minimal fertilizer needs'
-              }
-            });
-          } else {
-            console.log('No tree document found for ID:', formattedTreeId, '. Using adoption data.');
-            // Use adoption data as fallback
-            adoptionsData.push({
-              id: adoptionDoc.id,
-              scientific_name: adoptionData.species || 'Scientific name not available',
-              common_names: {
-                english: adoptionData.treeName || 'Tree name not available',
-                local: ''
-              },
-              family: 'Information not available',
-              location: adoptionData.location || 'Location not specified',
-              health: adoptionData.health || "Excellent",
-              lastMaintenance: adoptionData.lastMaintenance?.toDate?.() 
-                ? adoptionData.lastMaintenance.toDate().toLocaleDateString()
-                : new Date().toLocaleDateString(),
-              images: {
-                primary: 'https://images.unsplash.com/photo-1610847499832-918a1c3c6813'
-              },
-              progress: adoptionData.progress || 85,
-              characteristics: {
-                height: { current: 0, potential: 0 },
-                growth_rate: 'Information not available',
-                soil_preference: 'Information not available',
-                water_needs: 'Information not available'
-              },
-              uses: {
-                medicinal: [],
-                environmental: adoptionData.environmental_benefits || [
-                  'CO2 absorption: 52kg per year',
-                  'Water conservation: 150L per month',
-                  'Supports wildlife habitat'
-                ]
-              },
-              care_guidelines: {
-                watering: 'Information not available',
-                pruning: 'Information not available',
-                fertilization: 'Information not available'
-              }
-            });
+          // Debug log for image data
+          console.log('Adoption data image fields:', {
+            hasImages: !!adoptionData.images,
+            hasImage: !!adoptionData.image,
+            hasSelectedImage: !!adoptionData.selectedImage,
+            hasTreeImage: !!adoptionData.treeImage
+          });
+
+          // Try to get image from various possible fields
+          if (adoptionData.images?.primary) {
+            imageUrl = adoptionData.images.primary;
+            console.log('Using primary image from images object:', imageUrl);
+          } else if (adoptionData.selectedImage) {
+            imageUrl = adoptionData.selectedImage;
+            console.log('Using selectedImage:', imageUrl);
+          } else if (adoptionData.treeImage) {
+            imageUrl = adoptionData.treeImage;
+            console.log('Using treeImage:', imageUrl);
+          } else if (adoptionData.image) {
+            imageUrl = adoptionData.image;
+            console.log('Using image field:', imageUrl);
           }
+
+          // If no image found, use a default
+          if (!imageUrl) {
+            imageUrl = 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2313&q=80';
+            console.log('No image found in adoption data, using default');
+          }
+
+          adoptionsData.push({
+            id: adoptionDoc.id,
+            ...adoptionData,
+            // Format any timestamp fields
+            adoptionDate: adoptionData.adoptionDate?.toDate?.() 
+              ? adoptionData.adoptionDate.toDate().toLocaleDateString()
+              : new Date().toLocaleDateString(),
+            createdAt: adoptionData.createdAt?.toDate?.() 
+              ? adoptionData.createdAt.toDate().toLocaleDateString()
+              : new Date().toLocaleDateString(),
+            updatedAt: adoptionData.updatedAt?.toDate?.() 
+              ? adoptionData.updatedAt.toDate().toLocaleDateString()
+              : new Date().toLocaleDateString(),
+            lastMaintenance: adoptionData.lastMaintenance?.toDate?.() 
+              ? adoptionData.lastMaintenance.toDate().toLocaleDateString()
+              : new Date().toLocaleDateString(),
+            image: imageUrl,
+            // Keep original scientific name and merge with enriched data
+            scientific_name: adoptionData.scientific_name || adoptionData.species,
+            common_names: enrichedData.common_names,
+            characteristics: {
+              ...enrichedData.characteristics,
+              // Preserve any existing characteristics if they exist
+              ...adoptionData.characteristics
+            },
+            environmental_impact: enrichedData.environmental_impact,
+            care_details: enrichedData.care_details,
+            uses: {
+              ...adoptionData.uses,
+              environmental: enrichedData.environmental_impact.ecological_benefits
+            }
+          });
         }
 
         console.log('Final processed adoptions data:', adoptionsData);
@@ -191,11 +166,30 @@ const DashboardPage = () => {
 
   // Format height display
   const formatHeight = (height = {}) => {
-    if (!height || (!height.average && !height.maximum)) return 'Unknown';
-    if (height.average && height.maximum) {
-      return `${height.average}-${height.maximum}m`;
+    console.log('Formatting height data:', height);
+    
+    if (!height) {
+      console.log('No height data provided');
+      return 'Unknown';
     }
-    return `Up to ${height.maximum || height.average}m`;
+    
+    const avg = height.average ? parseFloat(height.average) : null;
+    const max = height.maximum ? parseFloat(height.maximum) : null;
+    
+    console.log('Parsed height values:', { avg, max });
+    
+    if (!avg && !max) {
+      console.log('No valid height values found');
+      return 'Unknown';
+    }
+    
+    if (avg && max) {
+      console.log('Both average and maximum heights available');
+      return `${avg}-${max}m`;
+    }
+    
+    console.log('Using single height value');
+    return `Up to ${max || avg}m`;
   };
 
   const handleMintNFT = (tree) => {
@@ -295,9 +289,9 @@ const DashboardPage = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {adoptedTrees.length === 0 ? (
-                  <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+                  <div className="md:col-span-2 bg-white rounded-xl shadow-lg p-8 text-center">
                     <h3 className="text-xl text-forest-green mb-4">No Trees Adopted Yet</h3>
                     <p className="text-gray-600 mb-6">Start your journey by adopting your first tree!</p>
                     <Link 
@@ -309,114 +303,123 @@ const DashboardPage = () => {
                   </div>
                 ) : (
                   adoptedTrees.map((tree) => (
-                    <div key={tree.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
-                      <div className="flex flex-col md:flex-row">
-                        <div className="w-full md:w-1/3 h-64 md:h-auto">
+                    <motion.div 
+                      key={tree.id} 
+                      className="bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden transition-all duration-300"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="flex h-full">
+                        {/* Image section */}
+                        <div className="relative w-32 h-auto">
+                          <div className="absolute inset-0 bg-black/5 transition-all duration-300" />
                           <img 
-                            src={tree.images?.primary || 'https://images.unsplash.com/photo-1610847499832-918a1c3c6813'}
+                            src={tree.image}
                             alt={tree.common_names?.english || 'Tree'}
                             className="w-full h-full object-cover"
+                            onError={(e) => {
+                              if (!e.target.src.includes('unsplash')) {
+                                e.target.src = 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2613&q=80';
+                              }
+                            }}
                           />
                         </div>
-                        <div className="w-full md:w-2/3 p-6">
-                          <div className="flex justify-between items-start mb-4">
+
+                        {/* Content section */}
+                        <div className="flex-1 p-4">
+                          <div className="flex justify-between items-start gap-2">
                             <div>
-                              <h3 className="text-2xl font-semibold text-forest-green mb-1">
+                              <h3 className="text-xl font-semibold text-gray-900 leading-tight">
                                 {tree.common_names?.english || 'Unknown Tree'}
                               </h3>
-                              <p className="text-sage-green italic mb-1">{tree.scientific_name || 'Scientific name not available'}</p>
-                              <p className="text-gray-600">{tree.location || 'Location not specified'}</p>
+                              <p className="text-base text-gray-500 italic mt-0.5">
+                                {tree.scientific_name}
+                              </p>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            <span className={`px-2 py-0.5 rounded-full text-base font-medium ${
                               tree.health === 'Excellent' 
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-yellow-100 text-yellow-800'
+                                ? 'bg-green-50 text-green-700'
+                                : 'bg-yellow-50 text-yellow-700'
                             }`}>
-                              {tree.health || 'Unknown'}
+                              {tree.health || 'Good'}
                             </span>
                           </div>
 
-                          <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div className="bg-forest-green/5 rounded-lg p-3">
-                              <p className="text-sm text-gray-600 mb-1">Height</p>
-                              <p className="font-medium text-forest-green">
-                                {formatHeight(tree.characteristics?.height)}
-                              </p>
-                            </div>
-                            <div className="bg-forest-green/5 rounded-lg p-3">
-                              <p className="text-sm text-gray-600 mb-1">Growth Rate</p>
-                              <p className="font-medium text-forest-green">
-                                {tree.characteristics?.growth_rate || 'Unknown'}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="space-y-4">
-                            {(tree.uses?.medicinal?.length > 0) && (
-                              <div>
-                                <h4 className="text-sm font-medium text-gray-600 mb-2">Medicinal Uses</h4>
-                                <div className="flex flex-wrap gap-2">
-                                  {tree.uses.medicinal.map((use, index) => (
-                                    <span key={index} className="bg-leaf-green/10 text-forest-green px-3 py-1 rounded-full text-sm">
-                                      {use}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {(tree.uses?.environmental?.length > 0) && (
-                              <div>
-                                <h4 className="text-sm font-medium text-gray-600 mb-2">Environmental Benefits</h4>
-                                <div className="flex flex-wrap gap-2">
-                                  {tree.uses.environmental.map((benefit, index) => (
-                                    <span key={index} className="bg-sage-green/10 text-forest-green px-3 py-1 rounded-full text-sm">
-                                      {benefit}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            <div className="pt-4 border-t border-gray-100">
-                              <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">Growth Progress</span>
-                                <span className="text-forest-green font-medium">{tree.progress || 0}%</span>
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div 
-                                  className="bg-leaf-green rounded-full h-2 transition-all duration-500"
-                                  style={{ width: `${tree.progress || 0}%` }}
-                                />
-                              </div>
-                            </div>
-
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600">Last Maintenance</span>
-                              <span className="text-forest-green font-medium">{tree.lastMaintenance || 'Not available'}</span>
-                            </div>
-                          </div>
-
-                          <div className="mt-6 flex justify-between items-center">
-                            <button
-                              onClick={() => handleMintNFT(tree)}
-                              className="bg-forest-green text-white px-4 py-2 rounded-lg hover:bg-forest-green/90 transition-colors"
-                            >
-                              Mint NFT
-                            </button>
-                            <button
-                              onClick={() => navigate('/tree-chat', { state: { tree } })}
-                              className="bg-leaf-green text-white px-4 py-2 rounded-lg hover:bg-leaf-green/90 transition-colors flex items-center gap-2"
-                            >
-                              <span>Chat with Tree</span>
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                          {/* Growth Rate & Benefits */}
+                          <div className="mt-2 space-y-2">
+                            <div className="flex items-center gap-1 text-base text-gray-600">
+                              <svg className="w-3.5 h-3.5 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                               </svg>
-                            </button>
+                              <span className="text-gray-500">Growth:</span>
+                              <span className="font-medium text-gray-700">
+                                {tree.characteristics?.growth_rate || 'Moderate'}
+                              </span>
+                            </div>
+
+                            {tree.uses?.environmental && tree.uses.environmental.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {tree.uses.environmental.slice(0, 2).map((benefit, index) => (
+                                  <span 
+                                    key={index} 
+                                    className="inline-block px-1.5 py-0.5 bg-forest-green/5 text-forest-green rounded text-base"
+                                  >
+                                    {benefit}
+                                  </span>
+                                ))}
+                                {tree.uses.environmental.length > 2 && (
+                                  <span className="text-xs text-gray-400">
+                                    +{tree.uses.environmental.length - 2}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="mt-3">
+                            <div className="flex justify-between text-base mb-1">
+                              <span className="text-gray-500">Progress</span>
+                              <span className="text-forest-green font-medium">{tree.progress || 0}%</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-1 overflow-hidden">
+                              <div 
+                                className="bg-forest-green h-full rounded-full transition-all duration-500"
+                                style={{ width: `${tree.progress || 0}%` }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Footer */}
+                          <div className="mt-3 flex items-center justify-between">
+                            <span className="text-base text-gray-500">
+                              Last maintained: {tree.lastMaintenance || 'Not available'}
+                            </span>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleMintNFT(tree)}
+                                className="text-base bg-forest-green text-white px-2 py-1 rounded hover:bg-forest-green/90 transition-all duration-300 flex items-center gap-1 group"
+                              >
+                                Mint NFT
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() => navigate('/tree-chat', { state: { tree } })}
+                                className="text-base bg-leaf-green text-white px-2 py-1 rounded hover:bg-leaf-green/90 transition-all duration-300 flex items-center gap-1 group"
+                              >
+                                Chat
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   ))
                 )}
               </div>
@@ -477,11 +480,11 @@ const DashboardPage = () => {
                           </div>
                         </div>
                       </div>
-                      {tree.care_guidelines && (
+                      {tree.care_details && (
                         <div className="space-y-4">
-                          <h4 className="text-lg font-medium text-forest-green">Maintenance Guidelines</h4>
+                          <h4 className="text-lg font-medium text-forest-green">Maintenance Details</h4>
                           <div className="space-y-3">
-                            {Object.entries(tree.care_guidelines).map(([key, value]) => (
+                            {Object.entries(tree.care_details).map(([key, value]) => (
                               <div key={key} className="bg-cream/30 rounded-lg p-4">
                                 <p className="font-medium text-gray-700 mb-1">{key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}</p>
                                 <p className="text-gray-600">{value}</p>
