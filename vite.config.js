@@ -10,23 +10,16 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'animation-vendor': ['framer-motion'],
-          'ui-vendor': ['react-minimal-pie-chart']
+          'animation-vendor': ['framer-motion']
         }
       }
     },
     chunkSizeWarningLimit: 1600,
     target: 'esnext',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
-      }
-    }
+    minify: 'esbuild'
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion', 'react-minimal-pie-chart']
+    include: ['react', 'react-dom', 'framer-motion']
   },
   server: {
     port: 3000,

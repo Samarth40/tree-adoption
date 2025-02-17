@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node --max_old_space_size=4096 node_modules/vite/bin/vite.js build",
-    "vercel-build": "vite build",
+    "build": "vite build",
+    "vercel-build": "cross-env npm_config_platform=linux npm_config_arch=x64 npm install @rollup/rollup-linux-x64-gnu && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "download-trees": "node src/scripts/downloadTreeData.js",
@@ -55,6 +55,7 @@
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
     "eslint": "^9.19.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.0.0",

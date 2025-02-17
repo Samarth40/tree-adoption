@@ -12,6 +12,12 @@ const __dirname = dirname(__filename);
 
 dotenv.config();
 
+// Debug environment variables
+console.log('Environment Variables Check:');
+console.log('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME);
+console.log('CLOUDINARY_API_KEY:', process.env.CLOUDINARY_API_KEY);
+console.log('CLOUDINARY_API_SECRET:', process.env.CLOUDINARY_API_SECRET);
+
 const app = express();
 const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
 
