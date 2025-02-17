@@ -8,8 +8,8 @@ module.exports = {
     extend: {
       colors: {
         'forest-green': '#2D5A27',
-        'sage-green': '#86A97C',
         'earth-brown': '#795548',
+        'sage-green': '#86A97C',
         'leaf-green': '#4CAF50',
         'sky-blue': '#03A9F4',
         'cream': '#F5F5DC',
@@ -23,6 +23,10 @@ module.exports = {
       },
       animation: {
         shake: 'shake 0.5s ease-in-out',
+      },
+      spacing: {
+        'section': '6rem',
+        'section-lg': '8rem',
       }
     },
   },
