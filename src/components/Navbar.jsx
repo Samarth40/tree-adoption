@@ -51,20 +51,20 @@ const Navbar = () => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled 
           ? 'py-2' 
-          : 'py-4'
+          : 'py-3'
       }`}
     >
       {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-r from-forest-green/95 via-sage-green/95 to-forest-green/95 backdrop-blur-md shadow-lg"></div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link 
             to="/" 
             className="flex items-center space-x-3 group"
           >
-            <span className="text-4xl transform transition-transform duration-300 group-hover:rotate-12">🌳</span>
+            <span className="text-3xl transform transition-transform duration-300 group-hover:rotate-12">🌳</span>
             <span className="hidden sm:block text-2xl font-bold bg-gradient-to-r from-white to-cream bg-clip-text text-transparent">
               Tree Adoption
             </span>
@@ -213,31 +213,34 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <motion.button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors duration-300"
-            whileTap={{ scale: 0.95 }}
+            className="lg:hidden text-white transition-all duration-300"
+            whileTap={{ scale: 0.9 }}
           >
-            <svg 
-              className="w-6 h-6" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+            <motion.div
+              animate={isMobileMenuOpen ? "open" : "closed"}
+              variants={{
+                open: { rotate: 180 },
+                closed: { rotate: 0 }
+              }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              {isMobileMenuOpen ? (
-                <path 
+              <svg 
+                className="w-7 h-7" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <motion.path 
                   strokeLinecap="round" 
                   strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M6 18L18 6M6 6l12 12"
+                  strokeWidth={2}
+                  variants={{
+                    open: { d: "M6 18L18 6M6 6l12 12" },
+                    closed: { d: "M4 6h16M4 12h16M4 18h16" }
+                  }}
                 />
-              ) : (
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+              </svg>
+            </motion.div>
           </motion.button>
         </div>
       </div>
@@ -252,55 +255,93 @@ const Navbar = () => {
             className="lg:hidden bg-gradient-to-b from-forest-green/95 to-sage-green/95 backdrop-blur-md"
           >
             <div className="px-4 py-6 space-y-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.path}
-                  className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    isActive(item.path) 
-                      ? 'text-white bg-gradient-to-r from-leaf-green to-sage-green shadow-md' 
-                      : 'text-white hover:bg-white/10'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="pt-4 space-y-3">
-                {currentUser ? (
-                  <div className="px-4 py-3">
-                    <div className="text-sm text-white mb-2">
-                      {currentUser.email}
-                    </div>
+              {/* Navigation Section */}
+              <div className="space-y-2">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    to={item.path}
+                    className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                      isActive(item.path) 
+                        ? 'text-white bg-gradient-to-r from-leaf-green to-sage-green shadow-md' 
+                        : 'text-white hover:bg-white/10'
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+
+              {currentUser ? (
+                <>
+                  {/* Simple Divider */}
+                  <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mx-4" />
+
+                  <div className="space-y-2 px-4">
+                    {/* Profile Actions */}
+                    <Link
+                      to="/profile"
+                      className="flex items-center justify-center w-full px-4 py-3 rounded-xl bg-white/5 text-white text-sm font-medium hover:bg-white/10 transition-all duration-300"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Profile
+                    </Link>
+
+                    <Link
+                      to="/dashboard"
+                      className="flex items-center justify-center w-full px-4 py-3 rounded-xl bg-white/5 text-white text-sm font-medium hover:bg-white/10 transition-all duration-300"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3c-1.5 0-2.5 1-3.5 2.5C7 7.5 6 9 6 11c0 3 2.5 5 6 5s6-2 6-5c0-2-1-3.5-2.5-5.5C14.5 4 13.5 3 12 3zM12 16v5" />
+                      </svg>
+                      My Trees
+                    </Link>
+
+                    {/* Divider before logout */}
+                    <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-2" />
+
                     <button
                       onClick={() => {
                         handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full px-4 py-2 rounded-lg bg-forest-green text-white text-sm font-medium hover:bg-forest-green/90 transition-colors"
+                      className="flex items-center justify-center w-full px-4 py-3 rounded-xl bg-gradient-to-r from-red-800/40 to-red-900/40 text-red-100 text-sm font-medium hover:from-red-800/50 hover:to-red-900/50 transition-all duration-300"
                     >
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
                       Logout
                     </button>
                   </div>
-                ) : (
-                  <>
+                </>
+              ) : (
+                <>
+                  {/* Simple Divider */}
+                  <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mx-4" />
+
+                  <div className="space-y-3 px-4">
                     <Link
                       to="/login"
-                      className="block px-4 py-3 text-white hover:bg-white/10 rounded-xl transition-all duration-300"
+                      className="block px-4 py-3 text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Login
                     </Link>
                     <Link
                       to="/signup"
-                      className="block px-4 py-3 bg-gradient-to-r from-leaf-green to-sage-green hover:from-sage-green hover:to-leaf-green text-white rounded-xl shadow-lg transition-all duration-300"
+                      className="block px-4 py-3 bg-gradient-to-r from-leaf-green to-sage-green hover:from-sage-green hover:to-leaf-green text-white rounded-xl shadow-lg transition-all duration-300 text-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Sign Up
                     </Link>
-                  </>
-                )}
-              </div>
+                  </div>
+                </>
+              )}
             </div>
           </motion.div>
         )}
