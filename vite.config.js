@@ -11,8 +11,12 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'animation-vendor': ['framer-motion']
-        }
-      }
+        },
+        format: 'es'
+      },
+      external: [
+        '@rollup/rollup-linux-x64-gnu'
+      ]
     },
     chunkSizeWarningLimit: 1600,
     target: 'esnext',
