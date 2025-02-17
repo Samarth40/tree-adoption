@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,34 +25,36 @@ const itemVariants = {
 };
 
 const About = () => {
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);
+
   const teamMembers = [
     {
       name: "Samarth Shinde",
       role: "Team Leader",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3",
+      avatar: "/ss1.jpg",
       github: "https://github.com/Samarth40",
       expertise: "Full Stack Development"
     },
     {
       name: "Rohit Gajbhiye",
       role: "Developer",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3",
-      github: "#",
+      avatar: "/rg.jpg",
+      github: "https://github.com/rohitgajbhiye744",
       expertise: "Frontend Architecture"
     },
     {
       name: "Mrunali Patil",
       role: "Developer",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3",
-      github: "#",
-      expertise: "UI/UX Design"
+      avatar: "/mp1.jpg",
+      github: "https://github.com/Mrunali394",
+      expertise: "Backend Development"
     },
     {
       name: "Sakshi Pawar",
       role: "Developer",
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3",
-      github: "#",
-      expertise: "Backend Development"
+      avatar: "/sp1_LE_.jpg",
+      github: "https://github.com/Sakshu4",
+      expertise: "UI/UX Design"
     }
   ];
 
@@ -605,6 +607,115 @@ const About = () => {
                   {/* Border Animation */}
                   <div className="absolute inset-0 border-2 border-transparent group-hover:border-forest-green/20 rounded-3xl transition-colors duration-300" />
                 </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* FAQ Section */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="mb-16 mt-24"
+        >
+          <h2 className="text-3xl font-bold text-forest-green mb-12 text-center relative">
+            Frequently Asked Questions
+            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-forest-green to-sage-green rounded-full" />
+          </h2>
+
+          <div className="max-w-3xl mx-auto space-y-6">
+            {[
+              {
+                question: "How does tree adoption work?",
+                answer: "Tree adoption is a simple process where you can choose to either virtually or physically adopt a tree. Virtual adoption means an NGO/organization will care for your tree, while physical adoption allows you to plant and care for the tree yourself with our guidance and support."
+              },
+              {
+                question: "What are the benefits of adopting a tree?",
+                answer: "Adopting a tree helps combat climate change, creates wildlife habitats, and improves air quality. You'll receive regular updates about your tree's growth, impact metrics, and can participate in our community events. Each adopted tree absorbs approximately 48 pounds of CO₂ annually."
+              },
+              {
+                question: "How can I track my tree's progress?",
+                answer: "Through our interactive dashboard, you can monitor your tree's growth, environmental impact, and receive care reminders. We provide regular photo updates, growth measurements, and impact statistics for virtually adopted trees."
+              },
+              {
+                question: "Can I adopt multiple trees?",
+                answer: "Yes! You can adopt as many trees as you'd like. Each tree contributes to environmental conservation, and we offer special packages for multiple tree adoptions. You can manage all your adopted trees through a single dashboard."
+              },
+              {
+                question: "What happens if my tree doesn't survive?",
+                answer: "We have measures in place to ensure the highest survival rate for all adopted trees. However, if a tree doesn't survive within the first year of adoption, we offer a free replacement or the option to adopt another tree at no additional cost."
+              }
+            ].map((faq, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="group relative"
+                whileHover={{ scale: 1.02 }}
+              >
+                {/* Main Card */}
+                <div className="bg-white rounded-2xl p-6 shadow-lg relative z-10 overflow-hidden">
+                  {/* Decorative Elements */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-forest-green/5 to-sage-green/5 rounded-full -translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-700" />
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-sage-green/5 to-forest-green/5 rounded-full translate-x-4 translate-y-4 group-hover:scale-150 transition-transform duration-700" />
+
+                  {/* Question Header */}
+                  <div 
+                    className="relative flex justify-between items-center cursor-pointer group"
+                    onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                  >
+                    <h3 className="text-lg font-semibold text-forest-green group-hover:text-leaf-green transition-colors duration-300 pr-8">
+                      {faq.question}
+                    </h3>
+                    <motion.div
+                      className="w-8 h-8 flex items-center justify-center rounded-xl bg-gradient-to-br from-forest-green/10 to-sage-green/10 group-hover:from-forest-green/20 group-hover:to-sage-green/20 transition-colors duration-300"
+                      whileHover={{ scale: 1.1 }}
+                      animate={{ rotate: openFaqIndex === index ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <svg
+                        className="w-5 h-5 text-forest-green"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </motion.div>
+                  </div>
+
+                  {/* Answer Content */}
+                  <AnimatePresence>
+                    {openFaqIndex === index && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="relative overflow-hidden"
+                      >
+                        <motion.div 
+                          className="mt-4 text-gray-600 leading-relaxed pt-2"
+                          initial={{ y: -10 }}
+                          animate={{ y: 0 }}
+                          exit={{ y: -10 }}
+                        >
+                          {faq.answer}
+                        </motion.div>
+                        {/* Decorative Line */}
+                        <div className="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-forest-green/20 to-sage-green/20 rounded-full transform -translate-x-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Background Card - Creates depth effect */}
+                <div className="absolute inset-0 bg-forest-green/10 rounded-2xl -z-10 transform-gpu transition-all duration-500 group-hover:translate-x-1 group-hover:translate-y-1" />
               </motion.div>
             ))}
           </div>
