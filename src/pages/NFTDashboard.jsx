@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import NFTMinting from '../components/NFT/NFTMinting';
 import NFTCollection from '../components/NFT/NFTCollection';
 import { motion } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
 
 const NFTDashboard = () => {
     const [activeTab, setActiveTab] = useState('mint');
     const [selectedTree, setSelectedTree] = useState(null);
+    const location = useLocation();
 
-    // Try to get selected tree from localStorage
     useEffect(() => {
+        // First try to get tree from location state
+        if (location.state?.selectedTree) {
+            setSelectedTree(location.state.selectedTree);
+            return;
+        }
+
+        // If not in location state, try localStorage
         const savedTree = localStorage.getItem('selectedTree');
         if (savedTree) {
             try {
@@ -17,7 +25,7 @@ const NFTDashboard = () => {
                 console.error('Error parsing saved tree:', error);
             }
         }
-    }, []);
+    }, [location.state]);
 
     const handleMintSuccess = () => {
         // Switch to collection tab after successful minting
@@ -77,16 +85,16 @@ const NFTDashboard = () => {
                                         Ready to Mint Your Tree NFT?
                                     </h3>
                                     <p className="text-gray-600 mb-6">
-                                        First, select a tree from the explore page to mint it as an NFT.
+                                        First, select a tree from your dashboard to mint it as an NFT.
                                     </p>
-                                    <motion.a
-                                        href="/explore"
-                                        className="inline-block px-6 py-3 bg-forest-green text-white rounded-xl hover:bg-forest-green/90 transition-colors"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                    >
-                                        Explore Trees
-                                    </motion.a>
+                                    <motion.div>
+                                        <Link
+                                            to="/dashboard"
+                                            className="inline-block px-6 py-3 bg-forest-green text-white rounded-xl hover:bg-forest-green/90 transition-colors"
+                                        >
+                                            Go to Dashboard
+                                        </Link>
+                                    </motion.div>
                                 </div>
                             ) : (
                                 <NFTMinting

@@ -4,6 +4,7 @@ import { getNFTCollection, deleteTreeNFT } from '../../blockchain/services/nftSe
 import { getNFTMetadata, deleteNFTAssets } from '../../blockchain/services/cloudinaryService';
 import { isWalletConnected, getWallet } from '../../blockchain/utils/walletUtils';
 import { FaTrash, FaLeaf, FaMapMarkerAlt, FaCloudSun } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
 const NFTCard = ({ nft, onDelete, isDeleting }) => {
     const [imageError, setImageError] = useState(false);
@@ -88,6 +89,22 @@ const NFTCollection = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deletingNftId, setDeletingNftId] = useState(null);
+    const location = useLocation();
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [mintedTreeName, setMintedTreeName] = useState('');
+
+    useEffect(() => {
+        // Check for mint success message in location state
+        if (location.state?.mintSuccess) {
+            setShowSuccess(true);
+            setMintedTreeName(location.state.mintedTree || 'Tree');
+            // Clear the success message after 5 seconds
+            const timer = setTimeout(() => {
+                setShowSuccess(false);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [location]);
 
     useEffect(() => {
         loadNFTs();
@@ -216,6 +233,33 @@ const NFTCollection = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
+            {/* Success Message */}
+            <AnimatePresence>
+                {showSuccess && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="bg-green-50 text-green-600 p-4 rounded-lg mb-8 flex items-center justify-between"
+                    >
+                        <div className="flex items-center">
+                            <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <span>Successfully minted NFT for {mintedTreeName}!</span>
+                        </div>
+                        <button
+                            onClick={() => setShowSuccess(false)}
+                            className="text-green-500 hover:text-green-600"
+                        >
+                            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-3xl font-bold text-gray-900">My Tree NFT Collection</h2>
                 <div className="text-gray-500 bg-gray-100 px-4 py-2 rounded-full">

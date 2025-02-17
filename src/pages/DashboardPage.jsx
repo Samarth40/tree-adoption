@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { db } from '../config/firebase';
 import { collection, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 import TreeEnrichmentService from '../services/treeEnrichmentService';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('my-trees');
@@ -13,6 +13,7 @@ const DashboardPage = () => {
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState(null);
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDataAndTrees = async () => {
@@ -193,6 +194,13 @@ const DashboardPage = () => {
       return `${height.average}-${height.maximum}m`;
     }
     return `Up to ${height.maximum || height.average}m`;
+  };
+
+  const handleMintNFT = (tree) => {
+    // Save tree data to localStorage and navigate to NFT dashboard
+    localStorage.setItem('selectedTree', JSON.stringify(tree));
+    // Navigate to NFT dashboard with the selected tree
+    navigate('/nft', { state: { selectedTree: tree } });
   };
 
   if (isLoading) {
@@ -385,6 +393,19 @@ const DashboardPage = () => {
                               <span className="text-gray-600">Last Maintenance</span>
                               <span className="text-forest-green font-medium">{tree.lastMaintenance || 'Not available'}</span>
                             </div>
+                          </div>
+
+                          {/* Add Mint NFT button */}
+                          <div className="mt-6 flex justify-end">
+                            <button
+                              onClick={() => handleMintNFT(tree)}
+                              className="bg-forest-green text-white px-6 py-3 rounded-xl hover:bg-forest-green/90 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                            >
+                              <span>Mint NFT</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </button>
                           </div>
                         </div>
                       </div>
