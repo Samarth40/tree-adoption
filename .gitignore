@@ -9,6 +9,7 @@
 .env.test
 .env.production
 .env*.local
+.env.example
 api/.env
 api/.env.*
 

@@ -6,6 +6,7 @@ import { collection, query, where, getDocs, getDoc, doc } from 'firebase/firesto
 import TreeEnrichmentService from '../services/treeEnrichmentService';
 import DashboardTreeEnrichmentService from '../services/dashboardTreeEnrichmentService';
 import { Link, useNavigate } from 'react-router-dom';
+import TreeChatbot from '../components/TreeChatbot';
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('my-trees');
@@ -15,6 +16,7 @@ const DashboardPage = () => {
   const [userData, setUserData] = useState(null);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const [activeTree, setActiveTree] = useState(null);
 
   useEffect(() => {
     const fetchUserDataAndTrees = async () => {
@@ -394,15 +396,26 @@ const DashboardPage = () => {
                             <span className="text-base text-gray-500">
                               Last maintained: {tree.lastMaintenance || 'Not available'}
                             </span>
-                            <button
-                              onClick={() => handleMintNFT(tree)}
-                              className="text-base bg-forest-green text-white px-2 py-1 rounded hover:bg-forest-green/90 transition-all duration-300 flex items-center gap-1 group"
-                            >
-                              Mint NFT
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                              </svg>
-                            </button>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleMintNFT(tree)}
+                                className="text-base bg-forest-green text-white px-2 py-1 rounded hover:bg-forest-green/90 transition-all duration-300 flex items-center gap-1 group"
+                              >
+                                Mint NFT
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() => navigate('/tree-chat', { state: { tree } })}
+                                className="text-base bg-leaf-green text-white px-2 py-1 rounded hover:bg-leaf-green/90 transition-all duration-300 flex items-center gap-1 group"
+                              >
+                                Chat
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
