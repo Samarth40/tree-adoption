@@ -89,3 +89,16 @@ aptos.exe
 deployment-key.json
 temp_package/ 
 .vercel
+
+# Environment variables
+.env.*.local
+src/.env
+
+# Build files
+/build
+/.next
+/out
+
+# Cache
+.cache
+.parcel-cache
