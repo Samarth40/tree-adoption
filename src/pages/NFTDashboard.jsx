@@ -38,15 +38,15 @@ const NFTDashboard = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-forest-green/5 via-cream to-sage-green/10 pt-24">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-forest-green mb-4">Tree NFT Dashboard</h1>
+                <div className="text-center mb-6">
+                    <h1 className="text-3xl font-bold text-forest-green mb-2">Tree NFT Dashboard</h1>
                     <p className="text-gray-600 max-w-2xl mx-auto">
                         Mint NFTs for your adopted trees and view your collection
                     </p>
                 </div>
                 
                 {/* Tab Navigation */}
-                <div className="flex justify-center space-x-4 mb-8">
+                <div className="flex justify-center space-x-4 mb-4">
                     <button
                         onClick={() => setActiveTab('mint')}
                         className={`px-6 py-3 rounded-xl font-medium transition-colors
@@ -76,6 +76,7 @@ const NFTDashboard = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.2 }}
+                    className="mt-2"
                 >
                     {activeTab === 'mint' ? (
                         <div className="max-w-2xl mx-auto">
