@@ -34,7 +34,11 @@ const PaymentForm = ({ amount, onSuccess, onError }) => {
         console.log('Creating payment intent for amount:', amount);
         setError(null);
         
-        const response = await fetch('http://localhost:5000/api/create-payment-intent', {
+        const apiUrl = import.meta.env.PROD 
+          ? '/api/create-payment-intent'  // In production, use relative path
+          : 'http://localhost:5000/api/create-payment-intent'; // In development
+
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

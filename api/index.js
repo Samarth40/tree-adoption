@@ -19,7 +19,8 @@ const corsOptions = {
         'http://localhost:3000',
         'http://127.0.0.1:3000',
         'https://tree-adoption.vercel.app',
-        process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
+        process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+        /\.vercel\.app$/  // Allow all Vercel preview deployments
     ].filter(Boolean),
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
