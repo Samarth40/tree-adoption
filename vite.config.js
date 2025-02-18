@@ -10,21 +10,25 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'animation-vendor': ['framer-motion']
+          'animation-vendor': ['framer-motion'],
+          'firebase-vendor': ['firebase/app', 'firebase/firestore', 'firebase/auth', 'firebase/storage']
         },
         format: 'es'
-      },
-      external: [
-        '@rollup/rollup-linux-x64-gnu'
-      ]
+      }
     },
-    chunkSizeWarningLimit: 1600,
+    chunkSizeWarningLimit: 2000,
     target: 'esnext',
     minify: 'esbuild',
-    sourcemap: true
+    sourcemap: process.env.NODE_ENV !== 'production'
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion'],
+    include: [
+      'react', 
+      'react-dom', 
+      'framer-motion',
+      '@stripe/stripe-js',
+      '@stripe/react-stripe-js'
+    ],
     esbuildOptions: {
       target: 'esnext'
     }
@@ -46,6 +50,10 @@ export default defineConfig({
     }
   },
   esbuild: {
-    target: 'esnext'
+    target: 'esnext',
+    legalComments: 'none'
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }
 });
