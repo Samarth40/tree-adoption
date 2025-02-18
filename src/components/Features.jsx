@@ -40,7 +40,7 @@ const Features = () => {
               }}
             >
               {/* Card Front */}
-              <div className="p-8 transform-gpu group-hover:[transform:rotateY(180deg)] transition-transform duration-1000 ease-in-out [backface-visibility:hidden]">
+              <div className="p-8 transform-gpu group-hover:[transform:rotateY(180deg)] transition-transform duration-1000 ease-in-out [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
                 <div className="text-6xl mb-6">
                   {feature.icon}
                 </div>
@@ -53,7 +53,7 @@ const Features = () => {
               </div>
 
               {/* Card Back */}
-              <div className="absolute inset-0 p-6 bg-gradient-to-br from-forest-green to-sage-green rounded-xl [transform:rotateY(-180deg)] group-hover:[transform:rotateY(0)] transition-transform duration-1000 ease-in-out [backface-visibility:hidden] overflow-hidden">
+              <div className="absolute inset-0 p-6 bg-gradient-to-br from-forest-green to-sage-green rounded-xl [transform:rotateY(-180deg)] group-hover:[transform:rotateY(0)] transition-transform duration-1000 ease-in-out [backface-visibility:hidden] [-webkit-backface-visibility:hidden] overflow-hidden">
                 <div className="h-full flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out delay-300">
                   <div className="text-3xl mb-3">
                     {feature.icon}
@@ -72,13 +72,9 @@ const Features = () => {
                       </li>
                     ))}
                   </ul>
-                  <motion.button 
-                    className="mt-4 px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors text-sm"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  <button className="mt-4 px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors text-sm">
                     Learn More
-                  </motion.button>
+                  </button>
                 </div>
               </div>
             </motion.div>
