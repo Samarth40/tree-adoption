@@ -57,8 +57,7 @@ export default defineConfig({
   },
   esbuild: {
     target: 'esnext',
-    legalComments: 'none',
-    jsxInject: `import React from 'react'`
+    legalComments: 'none'
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
