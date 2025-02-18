@@ -352,64 +352,84 @@ const NFTCollection = () => {
                 )}
             </AnimatePresence>
 
-            {isLoading ? (
-                <div className="min-h-[400px] flex items-center justify-center">
-                    <div className="relative">
-                        <FaSpinner className="w-20 h-20 text-forest-green animate-spin" />
-                        <div className="absolute inset-0 bg-forest-green/20 blur-3xl rounded-full" />
+            <AnimatePresence>
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900">My Tree NFT Collection</h2>
+                    <div className="flex items-center gap-4">
+                        <div className="text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
+                            {nfts.length} {nfts.length === 1 ? 'Tree' : 'Trees'}
+                        </div>
+                        <button
+                            onClick={loadNFTs}
+                            className="bg-forest-green text-white px-4 py-2 rounded-full hover:bg-forest-green/90 transition-all duration-300 flex items-center gap-2"
+                        >
+                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Refresh
+                        </button>
                     </div>
                 </div>
-            ) : error ? (
-                <div className="min-h-[400px] flex items-center justify-center">
-                    <div className="text-center max-w-lg mx-auto">
-                        <div className="bg-red-50/80 backdrop-blur-md p-8 rounded-3xl shadow-2xl">
-                            <p className="text-red-600 text-xl mb-6">{error}</p>
-                            <motion.button
-                                onClick={loadNFTs}
-                                className="px-8 py-4 bg-forest-green text-white rounded-2xl hover:bg-forest-green/90 transition-all duration-300 shadow-lg hover:shadow-forest-green/30 text-lg font-medium"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                Retry Loading
-                            </motion.button>
+
+                {isLoading ? (
+                    <div className="min-h-[400px] flex items-center justify-center">
+                        <div className="relative">
+                            <FaSpinner className="w-20 h-20 text-forest-green animate-spin" />
+                            <div className="absolute inset-0 bg-forest-green/20 blur-3xl rounded-full" />
                         </div>
                     </div>
-                </div>
-            ) : nfts.length === 0 ? (
-                <div className="min-h-[400px] flex items-center justify-center">
-                    <div className="text-center max-w-lg mx-auto">
-                        <div className="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-2xl">
-                            <div className="mb-8 relative">
-                                <FaLeaf className="w-24 h-24 text-forest-green mx-auto" />
-                                <div className="absolute inset-0 bg-forest-green/20 blur-3xl rounded-full" />
+                ) : error ? (
+                    <div className="min-h-[400px] flex items-center justify-center">
+                        <div className="text-center max-w-lg mx-auto">
+                            <div className="bg-red-50/80 backdrop-blur-md p-8 rounded-3xl shadow-2xl">
+                                <p className="text-red-600 text-xl mb-6">{error}</p>
+                                <motion.button
+                                    onClick={loadNFTs}
+                                    className="px-8 py-4 bg-forest-green text-white rounded-2xl hover:bg-forest-green/90 transition-all duration-300 shadow-lg hover:shadow-forest-green/30 text-lg font-medium"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    Retry Loading
+                                </motion.button>
                             </div>
-                            <h3 className="text-3xl font-bold text-forest-green mb-4">No NFTs Found</h3>
-                            <p className="text-sage-green text-xl mb-10">You haven't minted any tree NFTs yet.</p>
-                            <motion.button
-                                onClick={() => window.location.href = '/mint'}
-                                className="px-10 py-5 bg-forest-green text-white rounded-2xl hover:bg-forest-green/90 transition-all duration-300 shadow-lg hover:shadow-forest-green/30 text-lg font-medium"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                Mint Your First Tree NFT
-                            </motion.button>
                         </div>
                     </div>
-                </div>
-            ) : (
-                <AnimatePresence>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {nfts.map((nft) => (
-                            <NFTCard
-                                key={nft.tree_id}
-                                nft={nft}
-                                onDelete={handleDelete}
-                                isDeleting={deletingNftId === nft.tree_id}
-                            />
-                        ))}
+                ) : nfts.length === 0 ? (
+                    <div className="min-h-[400px] flex items-center justify-center">
+                        <div className="text-center max-w-lg mx-auto">
+                            <div className="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-2xl">
+                                <div className="mb-8 relative">
+                                    <FaLeaf className="w-24 h-24 text-forest-green mx-auto" />
+                                    <div className="absolute inset-0 bg-forest-green/20 blur-3xl rounded-full" />
+                                </div>
+                                <h3 className="text-3xl font-bold text-forest-green mb-4">No NFTs Found</h3>
+                                <p className="text-sage-green text-xl mb-10">You haven't minted any tree NFTs yet.</p>
+                                <motion.button
+                                    onClick={() => window.location.href = '/mint'}
+                                    className="px-10 py-5 bg-forest-green text-white rounded-2xl hover:bg-forest-green/90 transition-all duration-300 shadow-lg hover:shadow-forest-green/30 text-lg font-medium"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    Mint Your First Tree NFT
+                                </motion.button>
+                            </div>
+                        </div>
                     </div>
-                </AnimatePresence>
-            )}
+                ) : (
+                    <AnimatePresence>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {nfts.map((nft) => (
+                                <NFTCard
+                                    key={nft.tree_id}
+                                    nft={nft}
+                                    onDelete={handleDelete}
+                                    isDeleting={deletingNftId === nft.tree_id}
+                                />
+                            ))}
+                        </div>
+                    </AnimatePresence>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
