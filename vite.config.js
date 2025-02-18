@@ -12,14 +12,12 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'animation-vendor': ['framer-motion'],
           'firebase-vendor': ['firebase/app', 'firebase/firestore', 'firebase/auth', 'firebase/storage']
-        },
-        format: 'es'
+        }
       }
     },
     chunkSizeWarningLimit: 2000,
     target: 'esnext',
-    minify: 'esbuild',
-    sourcemap: process.env.NODE_ENV !== 'production'
+    minify: 'esbuild'
   },
   optimizeDeps: {
     include: [
@@ -50,10 +48,6 @@ export default defineConfig({
     }
   },
   esbuild: {
-    target: 'esnext',
-    legalComments: 'none'
-  },
-  define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    target: 'esnext'
   }
 });
