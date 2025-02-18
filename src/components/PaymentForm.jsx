@@ -34,29 +34,41 @@ const PaymentForm = ({ amount, onSuccess, onError }) => {
         console.log('Creating payment intent for amount:', amount);
         setError(null);
         
-        const apiUrl = import.meta.env.PROD 
-          ? '/api/create-payment-intent'  // In production, use relative path
-          : 'http://localhost:5000/api/create-payment-intent'; // In development
-
-        const response = await fetch(apiUrl, {
+        // Always use relative path for API calls
+        const response = await fetch('/api/create-payment-intent', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ amount })
+          body: JSON.stringify({ amount }),
+          // Add credentials and mode for better CORS handling
+          credentials: 'same-origin',
+          mode: 'same-origin'
         });
 
-        const data = await response.json();
-
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to create payment intent');
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
-        console.log('Payment intent created successfully:', data.clientSecret);
+        const data = await response.json();
+        console.log('Payment intent created successfully');
         setClientSecret(data.clientSecret);
       } catch (err) {
-        const errorMessage = err.message || 'Failed to initialize payment. Please try again.';
-        console.error('Error creating payment intent:', err);
+        console.error('Error creating payment intent:', {
+          message: err.message,
+          name: err.name,
+          stack: err.stack
+        });
+        
+        let errorMessage = 'Failed to initialize payment.';
+        
+        if (err.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+          errorMessage = 'Payment request was blocked. Please disable any ad blockers or security extensions and try again.';
+        } else if (err.message.includes('Failed to fetch')) {
+          errorMessage = 'Unable to connect to payment service. Please check your internet connection and try again.';
+        }
+        
         setError(errorMessage);
         onError(err);
       }

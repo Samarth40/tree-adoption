@@ -15,16 +15,33 @@ dotenv.config();
 
 // CORS configuration
 const corsOptions = {
-    origin: [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-        'https://tree-adoption.vercel.app',
-        process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
-        /\.vercel\.app$/  // Allow all Vercel preview deployments
-    ].filter(Boolean),
+    origin: function(origin, callback) {
+        // Allow requests with no origin (like mobile apps, curl, etc)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'https://tree-adoption.vercel.app'
+        ];
+        
+        // Allow all Vercel preview deployments
+        if (origin.match(/\.vercel\.app$/)) {
+            return callback(null, true);
+        }
+        
+        // Check if the origin is in our allowed list
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+        
+        callback(new Error('Not allowed by CORS'));
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 };
 
 // Initialize Express app
