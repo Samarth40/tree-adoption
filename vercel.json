@@ -3,29 +3,35 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "builds": [
-    { "src": "api/index.js", "use": "@vercel/node" },
-    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
+    { 
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    { 
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
   ],
   "routes": [
-    { 
-      "src": "/api/debug",
-      "dest": "api/index.js"
-    },
-    { 
-      "src": "/health",
-      "dest": "api/index.js"
-    },
-    { 
+    {
       "src": "/api/(.*)",
-      "dest": "api/index.js"
-    },
-    { 
-      "src": "^/assets/(.*)",
-      "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/assets/$1"
+      "dest": "/api/index.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/health",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)\\.(.+)",
+      "dest": "/$1.$2"
     },
     {
       "src": "/(.*)",
