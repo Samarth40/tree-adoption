@@ -484,32 +484,20 @@ export const discussionsService = {
 export const imageUploadService = {
   async verifyTreeImage(file) {
     try {
-      // Create a blob URL from the file
-      const imageUrl = URL.createObjectURL(file);
-
-      // Create an image element and wait for it to load
-      const img = new Image();
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = () => reject(new Error('Failed to load image. Please try a different image file.'));
-        img.src = imageUrl;
-      });
-
-      // Basic image validation
-      if (img.width < 200 || img.height < 200) {
-        throw new Error('Image is too small. Please upload an image that is at least 200x200 pixels.');
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Please select a valid image file (JPG or PNG).');
       }
 
-      if (img.width > 4096 || img.height > 4096) {
-        throw new Error('Image is too large. Please upload an image that is no larger than 4096x4096 pixels.');
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        throw new Error('Image size must be less than 5MB. Please choose a smaller image.');
       }
 
-      // Clean up
-      URL.revokeObjectURL(imageUrl);
       return true;
-
     } catch (error) {
-      console.error('Image verification error:', error);
+      console.error('Error verifying image:', error);
       throw error;
     }
   },
@@ -527,20 +515,29 @@ export const imageUploadService = {
         throw new Error('Image size must be less than 5MB. Please choose a smaller image.');
       }
 
-      // Create FormData and append file
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', 'treeadopt_unsigned');
-      formData.append('folder', folder);
+      // Convert file to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+      });
+      reader.readAsDataURL(file);
+      const base64Data = await base64Promise;
 
-      // Upload to Cloudinary
-      const response = await fetch(
-        'https://api.cloudinary.com/v1_1/dherd7qxm/image/upload',
-        {
-          method: 'POST',
-          body: formData
-        }
-      );
+      // Use our backend API endpoint with relative path
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: base64Data,
+          resource_type: 'image',
+          folder: folder
+        }),
+        credentials: 'same-origin',
+        mode: 'same-origin'
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -552,40 +549,75 @@ export const imageUploadService = {
 
       const data = await response.json();
 
-      if (!data.secure_url) {
+      if (!data.url) {
         throw new Error('Failed to get image URL. Please try uploading again.');
       }
 
-      return data.secure_url;
+      return data.url;
     } catch (error) {
-      console.error('Error uploading image:', error);
-      throw error;
+      console.error('Error uploading image:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      });
+
+      let errorMessage = 'Failed to upload image.';
+      
+      if (error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+        errorMessage = 'Upload was blocked. Please disable any ad blockers or security extensions and try again.';
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = 'Unable to connect to upload service. Please check your internet connection and try again.';
+      }
+      
+      throw new Error(errorMessage);
     }
   },
 
   async deleteImage(imageUrl) {
     try {
+      if (!imageUrl) {
+        throw new Error('Image URL is required for deletion');
+      }
+
       // Extract public ID from the URL
       const publicId = imageUrl.split('/').slice(-1)[0].split('.')[0];
       
-      const formData = new FormData();
-      formData.append('public_id', publicId);
-      formData.append('upload_preset', 'treeadopt_unsigned');
-
-      const response = await fetch(
-        'https://api.cloudinary.com/v1_1/dherd7qxm/image/destroy',
-        {
-          method: 'POST',
-          body: formData
-        }
-      );
+      // Use our backend API endpoint with relative path
+      const response = await fetch('/api/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          public_id: publicId,
+          resource_type: 'image'
+        }),
+        credentials: 'same-origin',
+        mode: 'same-origin'
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to delete image');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete image');
       }
+
+      return { success: true };
     } catch (error) {
-      console.error('Error deleting image:', error);
-      throw error;
+      console.error('Error deleting image:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      });
+      
+      let errorMessage = 'Failed to delete image.';
+      
+      if (error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+        errorMessage = 'Delete request was blocked. Please disable any ad blockers or security extensions and try again.';
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = 'Unable to connect to delete service. Please check your internet connection and try again.';
+      }
+      
+      throw new Error(errorMessage);
     }
   }
 };

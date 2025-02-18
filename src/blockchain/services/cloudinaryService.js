@@ -1,6 +1,5 @@
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-const API_BASE_URL = 'http://localhost:5000';
 
 // Upload metadata to Cloudinary
 export const uploadNFTMetadata = async (metadata) => {
@@ -21,8 +20,8 @@ export const uploadNFTMetadata = async (metadata) => {
 
         console.log('Cleaned metadata:', cleanedMetadata);
 
-        // Use our backend API endpoint with the correct base URL
-        const response = await fetch(`${API_BASE_URL}/api/upload`, {
+        // Use relative path for API endpoint
+        const response = await fetch('/api/upload', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -31,7 +30,9 @@ export const uploadNFTMetadata = async (metadata) => {
                 data: cleanedMetadata,
                 resource_type: 'raw',
                 format: 'json'
-            })
+            }),
+            credentials: 'same-origin',
+            mode: 'same-origin'
         });
 
         console.log('Upload response status:', response.status);
@@ -63,8 +64,21 @@ export const uploadNFTMetadata = async (metadata) => {
             publicId: result.publicId
         };
     } catch (error) {
-        console.error('Error uploading NFT metadata:', error);
-        throw new Error(`Failed to upload NFT metadata: ${error.message}`);
+        console.error('Error uploading NFT metadata:', {
+            message: error.message,
+            name: error.name,
+            stack: error.stack
+        });
+        
+        let errorMessage = 'Failed to upload NFT metadata.';
+        
+        if (error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+            errorMessage = 'Upload was blocked. Please disable any ad blockers or security extensions and try again.';
+        } else if (error.message.includes('Failed to fetch')) {
+            errorMessage = 'Unable to connect to upload service. Please check your internet connection and try again.';
+        }
+        
+        throw new Error(errorMessage);
     }
 };
 
@@ -115,8 +129,8 @@ export const uploadNFTImage = async (imageFile) => {
         reader.readAsDataURL(imageFile);
         const base64Data = await base64Promise;
 
-        // Use our backend API endpoint with the correct base URL
-        const response = await fetch(`${API_BASE_URL}/api/upload`, {
+        // Use relative path for API endpoint
+        const response = await fetch('/api/upload', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,7 +138,9 @@ export const uploadNFTImage = async (imageFile) => {
             body: JSON.stringify({
                 data: base64Data,
                 resource_type: 'image'
-            })
+            }),
+            credentials: 'same-origin',
+            mode: 'same-origin'
         });
 
         console.log('Upload response status:', response.status);
@@ -154,12 +170,25 @@ export const uploadNFTImage = async (imageFile) => {
             publicId: result.publicId
         };
     } catch (error) {
-        console.error('Error uploading NFT image:', error);
-        throw new Error(`Failed to upload NFT image: ${error.message}`);
+        console.error('Error uploading NFT image:', {
+            message: error.message,
+            name: error.name,
+            stack: error.stack
+        });
+        
+        let errorMessage = 'Failed to upload NFT image.';
+        
+        if (error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+            errorMessage = 'Upload was blocked. Please disable any ad blockers or security extensions and try again.';
+        } else if (error.message.includes('Failed to fetch')) {
+            errorMessage = 'Unable to connect to upload service. Please check your internet connection and try again.';
+        }
+        
+        throw new Error(errorMessage);
     }
 };
 
-// For deletion, we'll use our backend API
+// For deletion, we'll use relative path
 export const deleteNFTAssets = async (metadata) => {
     try {
         if (!metadata) {
@@ -171,8 +200,8 @@ export const deleteNFTAssets = async (metadata) => {
             image: metadata.image
         });
 
-        // Use our backend API endpoint with the correct base URL
-        const response = await fetch(`${API_BASE_URL}/api/delete`, {
+        // Use relative path for API endpoint
+        const response = await fetch('/api/delete', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -180,7 +209,9 @@ export const deleteNFTAssets = async (metadata) => {
             body: JSON.stringify({
                 public_id: metadata.metadata_uri,
                 resource_type: 'raw'
-            })
+            }),
+            credentials: 'same-origin',
+            mode: 'same-origin'
         });
 
         if (!response.ok) {
