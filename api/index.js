@@ -15,7 +15,12 @@ dotenv.config();
 
 // CORS configuration
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: [
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'https://tree-adoption.vercel.app',
+        process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
+    ].filter(Boolean),
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -64,6 +69,29 @@ app.get('/health', (req, res) => {
         status: 'healthy',
         environment: process.env.NODE_ENV,
         timestamp: new Date().toISOString()
+    });
+});
+
+// Debug endpoint
+app.get('/api/debug', (req, res) => {
+    res.status(200).json({
+        status: 'API is running',
+        environment: process.env.NODE_ENV,
+        vercelUrl: process.env.VERCEL_URL,
+        timestamp: new Date().toISOString(),
+        cors: {
+            origins: corsOptions.origin,
+            methods: corsOptions.methods
+        },
+        config: {
+            hasStripeKey: !!config.stripe.secretKey,
+            cloudinary: {
+                hasCloudName: !!config.cloudinary.cloudName,
+                hasApiKey: !!config.cloudinary.apiKey,
+                hasApiSecret: !!config.cloudinary.apiSecret,
+                hasUploadPreset: !!config.cloudinary.uploadPreset
+            }
+        }
     });
 });
 
