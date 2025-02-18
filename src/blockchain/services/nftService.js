@@ -142,6 +142,39 @@ export const mintTreeNFT = async (treeData, wallet) => {
     }
 };
 
+// Initialize NFT Collection
+const initializeNFTCollection = async (wallet) => {
+    try {
+        if (!wallet) {
+            throw new Error('Wallet is required');
+        }
+
+        console.log('Initializing NFT collection...');
+        
+        // Create the transaction payload for minting
+        const payload = {
+            function: `${NFT_CONTRACT_ADDRESS}::tree_nft::mint_tree_nft`,
+            type_arguments: [],
+            arguments: ["init_collection", "https://example.com/init", "0"]
+        };
+
+        console.log('Submitting initialization transaction...');
+        const transaction = await wallet.signAndSubmitTransaction({
+            payload: payload
+        });
+        console.log('Initialization transaction submitted:', transaction);
+        
+        // Wait for transaction
+        const result = await aptos.waitForTransaction({ transactionHash: transaction.hash });
+        console.log('Initialization complete:', result);
+        
+        return result;
+    } catch (error) {
+        console.error('Error initializing NFT collection:', error);
+        throw error;
+    }
+};
+
 // Get NFT Collection
 export const getNFTCollection = async (address) => {
     try {
@@ -154,11 +187,11 @@ export const getNFTCollection = async (address) => {
         console.log('Getting NFTs for address:', addressStr);
         console.log('Using NFT contract address:', NFT_CONTRACT_ADDRESS);
 
-        // Get all resources for the account
+        // Get the NFT collection resource from the contract account
         const resources = await aptos.getAccountResources({
-            accountAddress: addressStr
+            accountAddress: NFT_CONTRACT_ADDRESS
         });
-        console.log('Found account resources:', resources.length);
+        console.log('Found contract resources:', resources.length);
         
         // Log all resource types for debugging
         console.log('Available resource types:', resources.map(r => r.type));
@@ -170,40 +203,35 @@ export const getNFTCollection = async (address) => {
         const nftResource = resources.find(r => r.type === expectedType);
         
         if (!nftResource) {
-            console.log('No NFT collection found for address:', addressStr);
-            console.log('Expected resource type not found:', expectedType);
+            console.log('No NFT collection found in contract');
             return [];
         }
         
         console.log('Found NFT resource:', nftResource);
         console.log('NFT data:', nftResource.data);
         
-        // Use minted_trees array instead of tokens
+        // Use minted_trees array and filter for the specific address
         const mintedTrees = nftResource.data.minted_trees || [];
         console.log('Found minted trees:', mintedTrees);
 
-        // Burn address to filter out burned NFTs
-        const burnAddress = "0x0";
-        const zeroAddress = "0x0000000000000000000000000000000000000000000000000000000000000000";
-
-        // Transform the minted trees into the expected format and filter out burned NFTs
-        const nfts = mintedTrees
+        // Filter NFTs owned by the specified address
+        const userNfts = mintedTrees
             .filter(tree => {
-                const isNotBurned = tree.owner !== burnAddress && tree.owner !== zeroAddress;
-                if (!isNotBurned) {
-                    console.log('Filtering out burned NFT:', tree.tree_id);
+                const isOwner = tree.owner.toLowerCase() === addressStr.toLowerCase();
+                if (!isOwner) {
+                    console.log('Filtering out NFT not owned by user:', tree.tree_id);
                 }
-                return isNotBurned;
+                return isOwner;
             })
             .map(tree => ({
                 tree_id: tree.tree_id,
                 metadata_uri: tree.metadata_uri,
                 owner: tree.owner,
-                created_at: tree.created_at || new Date().toISOString()
+                created_at: tree.minting_date ? new Date(tree.minting_date * 1000).toISOString() : new Date().toISOString()
             }));
         
-        console.log('Processed NFTs (excluding burned):', nfts);
-        return nfts;
+        console.log('Processed NFTs for user:', userNfts);
+        return userNfts;
     } catch (error) {
         console.error('Error getting NFT collection:', error);
         console.error('Error details:', {

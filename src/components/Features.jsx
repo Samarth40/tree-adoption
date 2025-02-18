@@ -29,7 +29,7 @@ const Features = () => {
           {features.map((feature, index) => (
             <motion.div 
               key={index}
-              className="group relative bg-white/80 backdrop-blur-sm rounded-xl shadow-xl transition-all duration-700 ease-in-out cursor-pointer perspective-1000 hover:shadow-2xl"
+              className="group relative bg-white/80 backdrop-blur-sm rounded-xl shadow-xl transition-all duration-700 ease-in-out cursor-pointer [perspective:1000px] hover:shadow-2xl"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -40,7 +40,7 @@ const Features = () => {
               }}
             >
               {/* Card Front */}
-              <div className="p-8 transform-gpu group-hover:[transform:rotateY(180deg)] transition-transform duration-1000 ease-in-out backface-hidden">
+              <div className="p-8 transform-gpu group-hover:[transform:rotateY(180deg)] transition-transform duration-1000 ease-in-out [backface-visibility:hidden]">
                 <div className="text-6xl mb-6">
                   {feature.icon}
                 </div>
@@ -53,7 +53,7 @@ const Features = () => {
               </div>
 
               {/* Card Back */}
-              <div className="absolute inset-0 p-6 bg-gradient-to-br from-forest-green to-sage-green rounded-xl [transform:rotateY(-180deg)] group-hover:[transform:rotateY(0)] transition-transform duration-1000 ease-in-out backface-hidden overflow-hidden">
+              <div className="absolute inset-0 p-6 bg-gradient-to-br from-forest-green to-sage-green rounded-xl [transform:rotateY(-180deg)] group-hover:[transform:rotateY(0)] transition-transform duration-1000 ease-in-out [backface-visibility:hidden] overflow-hidden">
                 <div className="h-full flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out delay-300">
                   <div className="text-3xl mb-3">
                     {feature.icon}
@@ -72,26 +72,19 @@ const Features = () => {
                       </li>
                     ))}
                   </ul>
-                  <button className="mt-4 px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors text-sm">
+                  <motion.button 
+                    className="mt-4 px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors text-sm"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     Learn More
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
-
-      {/* Add perspective styles */}
-      <style jsx>{`
-        .perspective-1000 {
-          perspective: 1000px;
-        }
-        .backface-hidden {
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-        }
-      `}</style>
     </div>
   );
 };

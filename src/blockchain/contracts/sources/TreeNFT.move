@@ -55,10 +55,10 @@ module tree_adoption::tree_nft {
     ) acquires TreeNFTCollection {
         let owner_addr = signer::address_of(account);
         
-        // Get the collection
+        // Get the collection from the contract account
         let collection = borrow_global_mut<TreeNFTCollection>(@tree_adoption);
         
-        // Verify tree hasnt been minted
+        // Verify tree hasn't been minted
         assert!(
             !vector::any(&collection.minted_trees, |t| t.tree_id == tree_id), 
             error::already_exists(ETREE_ALREADY_MINTED)

@@ -186,7 +186,11 @@ const NFTCollection = () => {
                 return;
             }
 
+            console.log('Fetching NFTs for account:', account.address);
+            console.log('Using contract address:', import.meta.env.VITE_NFT_CONTRACT_ADDRESS);
+            
             const collection = await getNFTCollection(account.address);
+            console.log('Raw NFT collection response:', collection);
             
             if (!collection || collection.length === 0) {
                 setNfts([]);
@@ -223,7 +227,8 @@ const NFTCollection = () => {
             const nftsWithMetadata = (await Promise.all(nftPromises)).filter(Boolean);
             setNfts(nftsWithMetadata);
         } catch (error) {
-            console.error('Error loading NFTs:', error);
+            console.error('Detailed error in loadNFTs:', error);
+            console.error('Error stack:', error.stack);
             setError(error.message || 'Failed to load NFTs. Please try again later.');
         } finally {
             setIsLoading(false);

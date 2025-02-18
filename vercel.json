@@ -37,5 +37,20 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://*.stripe.com https://*.m.stripe.com"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "ALLOW-FROM https://*.stripe.com https://*.m.stripe.com"
+        }
+      ]
+    }
   ]
 } 
