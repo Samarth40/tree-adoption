@@ -16,9 +16,9 @@ const Footer = () => {
     {
       title: "Support",
       links: [
-        { label: "FAQs", path: "/faqs" },
-        { label: "Contact Us", path: "/contact" },
-        { label: "Privacy Policy", path: "/privacy" },
+        { label: "FAQs", path: "/about#faq" },
+        { label: "Contact Us", path: "/contact-us" },
+        { label: "Privacy Policy", path: "/privacy-policy" },
       ]
     },
     {

@@ -21,6 +21,8 @@ import Volunteer from './pages/Volunteer';
 import Partner from './pages/Partner';
 import Donate from './pages/Donate';
 import TreeChatPage from './pages/TreeChatPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import ContactUsPage from './pages/ContactUsPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -92,6 +94,8 @@ function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/login" element={currentUser ? <Navigate to="/dashboard" /> : <Login />} />
                   <Route path="/register" element={currentUser ? <Navigate to="/dashboard" /> : <Register />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                  <Route path="/contact-us" element={<ContactUsPage />} />
 
                   {/* Protected Routes */}
                   <Route path="/playground/:treeId" element={
