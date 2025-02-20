@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { FaSeedling, FaRobot, FaUsers, FaGlobeAmericas, FaCamera, FaPaintBrush } from 'react-icons/fa';
 
 const Features = () => {
   return (
@@ -41,7 +42,7 @@ const Features = () => {
             >
               {/* Card Front */}
               <div className="p-8 transform-gpu group-hover:[transform:rotateY(180deg)] transition-transform duration-1000 ease-in-out [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
-                <div className="text-6xl mb-6">
+                <div className="text-6xl mb-6 text-forest-green">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold text-forest-green mb-4">
@@ -55,7 +56,7 @@ const Features = () => {
               {/* Card Back */}
               <div className="absolute inset-0 p-6 bg-gradient-to-br from-forest-green to-sage-green rounded-xl [transform:rotateY(-180deg)] group-hover:[transform:rotateY(0)] transition-transform duration-1000 ease-in-out [backface-visibility:hidden] [-webkit-backface-visibility:hidden] overflow-hidden">
                 <div className="h-full flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out delay-300">
-                  <div className="text-3xl mb-3">
+                  <div className="text-3xl mb-3 text-white">
                     {feature.icon}
                   </div>
                   <h4 className="text-lg font-semibold mb-3">
@@ -87,7 +88,7 @@ const Features = () => {
 
 const features = [
   {
-    icon: "🌱",
+    icon: <FaSeedling />,
     title: "Personalized Tree Selection",
     description: "Choose from a variety of native tree species that best match your preferences and local environment.",
     details: [
@@ -98,18 +99,18 @@ const features = [
     ]
   },
   {
-    icon: "📱",
-    title: "Digital Tree Tracking",
-    description: "Monitor your tree's growth, health, and environmental impact through our interactive platform.",
+    icon: <FaRobot />,
+    title: "AI Enhanced Tree Chat",
+    description: "Engage in meaningful conversations with your adopted tree through our advanced AI chat interface.",
     details: [
-      "Real-time growth tracking",
-      "Health status updates",
-      "Environmental impact metrics",
-      "Maintenance reminders"
+      "Real-time tree insights",
+      "Educational interactions",
+      "Personalized responses",
+      "Growth updates"
     ]
   },
   {
-    icon: "🤝",
+    icon: <FaUsers />,
     title: "Community Engagement",
     description: "Connect with other tree adopters and participate in local environmental conservation events.",
     details: [
@@ -120,7 +121,7 @@ const features = [
     ]
   },
   {
-    icon: "🌍",
+    icon: <FaGlobeAmericas />,
     title: "Environmental Impact",
     description: "Track your contribution to carbon reduction and environmental preservation in real-time.",
     details: [
@@ -131,7 +132,7 @@ const features = [
     ]
   },
   {
-    icon: "📸",
+    icon: <FaCamera />,
     title: "Regular Updates",
     description: "Receive photos and progress reports about your adopted tree throughout the year.",
     details: [
@@ -142,14 +143,14 @@ const features = [
     ]
   },
   {
-    icon: "🎓",
-    title: "Educational Resources",
-    description: "Access comprehensive guides and expert advice on tree care and environmental conservation.",
+    icon: <FaPaintBrush />,
+    title: "Creative NFT",
+    description: "Receive a unique digital certificate of adoption as an NFT, representing your commitment to the environment.",
     details: [
-      "Expert care guides",
-      "Video tutorials",
-      "Seasonal tips",
-      "Conservation insights"
+      "Unique tree artwork",
+      "Digital ownership",
+      "Environmental metrics",
+      "Blockchain verified"
     ]
   }
 ];

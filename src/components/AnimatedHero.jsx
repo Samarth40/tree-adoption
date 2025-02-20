@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from 'react-router-dom';
 
 const AnimatedHero = () => {
   const scrollToFeatures = useCallback(() => {
@@ -90,14 +91,12 @@ const AnimatedHero = () => {
                 ease: "easeOut"
               }}
             >
-              <motion.button 
+              <Link 
+                to="/explore"
                 className="px-8 py-4 bg-leaf-green text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-sage-green transform hover:-translate-y-1 transition-all duration-200"
-                whileHover={{ scale: 1.02, y: -4 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
                 Adopt a Tree Now
-              </motion.button>
+              </Link>
               <motion.button 
                 className="px-8 py-4 bg-white/90 backdrop-blur-sm text-forest-green text-lg font-semibold rounded-lg shadow-lg hover:bg-white transform hover:-translate-y-1 transition-all duration-200"
                 whileHover={{ scale: 1.02, y: -4 }}

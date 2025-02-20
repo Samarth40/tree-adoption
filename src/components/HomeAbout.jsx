@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { FaLeaf, FaUsers, FaChartLine, FaCheck } from 'react-icons/fa';
 
 const HomeAbout = () => {
   return (
@@ -26,7 +27,9 @@ const HomeAbout = () => {
             <div className="relative">
               {/* Icon with ring effect */}
               <div className="relative inline-block">
-                <div className="text-leaf-green text-4xl mb-4 relative z-10">🌱</div>
+                <div className="text-leaf-green text-4xl mb-4 relative z-10">
+                  <FaLeaf />
+                </div>
                 <div className="absolute inset-0 bg-leaf-green/10 rounded-full scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500" />
               </div>
               
@@ -53,7 +56,9 @@ const HomeAbout = () => {
             <div className="relative">
               {/* Icon with ring effect */}
               <div className="relative inline-block">
-                <div className="text-leaf-green text-4xl mb-4 relative z-10">🤝</div>
+                <div className="text-leaf-green text-4xl mb-4 relative z-10">
+                  <FaUsers />
+                </div>
                 <div className="absolute inset-0 bg-leaf-green/10 rounded-full scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500" />
               </div>
               
@@ -80,7 +85,9 @@ const HomeAbout = () => {
             <div className="relative">
               {/* Icon with ring effect */}
               <div className="relative inline-block">
-                <div className="text-leaf-green text-4xl mb-4 relative z-10">📱</div>
+                <div className="text-leaf-green text-4xl mb-4 relative z-10">
+                  <FaChartLine />
+                </div>
                 <div className="absolute inset-0 bg-leaf-green/10 rounded-full scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500" />
               </div>
               
@@ -105,19 +112,19 @@ const HomeAbout = () => {
               </h3>
               <ul className="space-y-4">
                 <li className="flex items-center text-gray-600">
-                  <span className="text-leaf-green mr-2">✓</span>
+                  <FaCheck className="text-leaf-green mr-2" />
                   Support local environmental conservation
                 </li>
                 <li className="flex items-center text-gray-600">
-                  <span className="text-leaf-green mr-2">✓</span>
+                  <FaCheck className="text-leaf-green mr-2" />
                   Receive regular updates about your tree
                 </li>
                 <li className="flex items-center text-gray-600">
-                  <span className="text-leaf-green mr-2">✓</span>
+                  <FaCheck className="text-leaf-green mr-2" />
                   Contribute to climate change mitigation
                 </li>
                 <li className="flex items-center text-gray-600">
-                  <span className="text-leaf-green mr-2">✓</span>
+                  <FaCheck className="text-leaf-green mr-2" />
                   Create lasting environmental impact
                 </li>
               </ul>
