@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,6 +10,7 @@ const Navbar = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +19,19 @@ const Navbar = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const isActive = (path) => {
@@ -64,9 +78,13 @@ const Navbar = () => {
             to="/" 
             className="flex items-center space-x-3 group"
           >
-            <span className="text-3xl transform transition-transform duration-300 group-hover:rotate-12">🌳</span>
+            <img 
+              src="/TreeAdopt Logo.png" 
+              alt="VanaRaksha Logo" 
+              className="h-12 w-auto transform transition-transform duration-300 group-hover:scale-110"
+            />
             <span className="hidden sm:block text-2xl font-bold bg-gradient-to-r from-white to-cream bg-clip-text text-transparent">
-              Tree Adoption
+              VanaRaksha
             </span>
           </Link>
 
@@ -98,7 +116,7 @@ const Navbar = () => {
           {/* Auth Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
             {currentUser ? (
-              <div className="relative group">
+              <div className="relative group" ref={profileMenuRef}>
                 <button
                   className="flex items-center space-x-2 text-white hover:text-cream transition-colors duration-300"
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}

@@ -10,7 +10,7 @@ const HomeAbout = () => {
             Our Mission
           </h2>
           <p className="mt-4 text-xl text-sage-green">
-            Creating a sustainable future through tree adoption
+            Creating a sustainable future through VanaRaksha
           </p>
         </div>
 
@@ -100,8 +100,8 @@ const HomeAbout = () => {
         <div className="mt-16 bg-white rounded-lg shadow-lg p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="text-2xl font-bold text-forest-green mb-4">
-                Why Choose Tree Adoption?
+              <h3 className="text-2xl font-bold text-forest-green mb-6">
+                Why Choose VanaRaksha?
               </h3>
               <ul className="space-y-4">
                 <li className="flex items-center text-gray-600">

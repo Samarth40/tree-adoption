@@ -43,14 +43,18 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-6">
           {/* Brand Section */}
           <div className="col-span-2 space-y-4">
-            <Link to="/" className="flex items-center space-x-2 group">
-              <span className="text-4xl transform transition-transform duration-300 group-hover:rotate-12">🌳</span>
-              <span className="text-2xl font-bold bg-gradient-to-r from-white to-cream bg-clip-text text-transparent">
-                Tree Adoption
+            <div className="flex items-center">
+              <img 
+                src="/TreeAdopt Logo.png" 
+                alt="VanaRaksha Logo" 
+                className="h-12 w-auto mr-3"
+              />
+              <span className="text-2xl font-bold text-white">
+                VanaRaksha
               </span>
-            </Link>
-            <p className="text-cream/80 text-sm leading-relaxed max-w-xs">
-              Join our mission to create a greener future through tree adoption.
+            </div>
+            <p className="mt-2 text-white/80 max-w-md">
+              Join our mission to create a greener future through VanaRaksha.
             </p>
             {/* Social Links */}
             <div className="flex space-x-3">
@@ -141,8 +145,8 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-4 text-center">
-          <p className="text-cream/60 text-sm">
-            © {new Date().getFullYear()} Tree Adoption. All rights reserved.
+          <p className="text-sm text-gray-500">
+            © {new Date().getFullYear()} VanaRaksha. All rights reserved.
           </p>
         </div>
       </div>

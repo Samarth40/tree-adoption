@@ -65,21 +65,12 @@ const PasswordGate = ({ onUnlock }) => {
         transition={{ duration: 0.5 }}
       >
         <div className="text-center mb-8">
-          <motion.div
-            className="text-6xl mb-4"
-            animate={{
-              rotate: [0, 10, -10, 0],
-              scale: [1, 1.1, 1]
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            🌳
-          </motion.div>
-          <h2 className="text-2xl font-bold text-white mb-2">Welcome to Tree Adoption</h2>
+          <img 
+            src="/TreeAdopt Logo.png" 
+            alt="VanaRaksha Logo" 
+            className="h-24 w-auto mx-auto mb-4"
+          />
+          <h2 className="text-2xl font-bold text-white mb-2">Welcome to VanaRaksha</h2>
           <p className="text-cream/80">Please enter the password to continue</p>
         </div>
 
