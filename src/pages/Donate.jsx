@@ -188,7 +188,7 @@ const Donate = () => {
           {/* Animated leaf particles */}
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(12)].map((_, i) => (
-              <motion.div
+          <motion.div
                 key={i}
                 className="absolute"
                 initial={{ 
@@ -212,7 +212,7 @@ const Donate = () => {
                 <span className="text-4xl transform rotate-45">
                   {['🌱', '🍃', '🌿'][Math.floor(Math.random() * 3)]}
                 </span>
-              </motion.div>
+          </motion.div>
             ))}
           </div>
         </div>
@@ -220,7 +220,7 @@ const Donate = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
-            <motion.div
+          <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1 }}
@@ -228,41 +228,41 @@ const Donate = () => {
             >
               <div className="space-y-4">
                 <motion.span 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                   className="inline-block px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm
                            text-white/90 text-sm font-medium border border-white/20"
-                >
+          >
                   🌍 Make a Difference Today
                 </motion.span>
-                <motion.h1 
+            <motion.h1 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
                   className="text-6xl sm:text-7xl md:text-8xl font-bold"
-                >
+            >
                   <span className="text-white">Plant a Tree,</span>
-                  <motion.span 
-                    className="block text-leaf-green mt-2"
-                    animate={{
-                      scale: [1, 1.02, 1],
-                      transition: { duration: 2, repeat: Infinity }
-                    }}
-                  >
+              <motion.span 
+                className="block text-leaf-green mt-2"
+                animate={{
+                  scale: [1, 1.02, 1],
+                  transition: { duration: 2, repeat: Infinity }
+                }}
+              >
                     Grow Hope
-                  </motion.span>
-                </motion.h1>
+              </motion.span>
+            </motion.h1>
               </div>
-              
-              <motion.p
+            
+            <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
                 className="text-xl sm:text-2xl text-white/80 font-light max-w-xl"
               >
-                Join our mission to restore Earth's green cover. Every tree you sponsor helps combat climate change and creates a better future.
-              </motion.p>
+                Join VanRaksha's mission to restore Earth's green cover. Every tree you support helps combat climate change and creates a better future.
+            </motion.p>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -282,21 +282,21 @@ const Donate = () => {
                   <svg className="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
-                </motion.button>
+              </motion.button>
 
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={scrollToTransparency}
-                  className="px-8 py-4 text-lg font-semibold text-white border-2 border-white/30
+                onClick={scrollToTransparency}
+                className="px-8 py-4 text-lg font-semibold text-white border-2 border-white/30
                            hover:bg-white/10 rounded-2xl transition-all duration-300 backdrop-blur-sm
                            flex items-center gap-2"
-                >
+              >
                   <span>Learn More</span>
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                </motion.button>
+              </motion.button>
               </motion.div>
             </motion.div>
 
@@ -320,10 +320,10 @@ const Donate = () => {
               </motion.div>
 
               {/* Main Stats Card */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1 }}
                 className="bg-white/10 backdrop-blur-md rounded-3xl p-8
                           border border-white/20 relative overflow-hidden"
               >
@@ -407,10 +407,10 @@ const Donate = () => {
                       <span className="font-bold text-white">80%</span>
                     </div>
                     <div className="h-3 bg-white/20 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: "80%" }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: "80%" }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
                         className="h-full rounded-full relative"
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-leaf-green via-forest-green to-leaf-green animate-gradient" />
@@ -459,7 +459,7 @@ const Donate = () => {
                 <div className="flex flex-col">
                   <span className="text-white font-medium">Verified by</span>
                   <span className="text-leaf-green font-bold">EcoVerify™</span>
-                </div>
+              </div>
                 <motion.div
                   whileHover={{ x: 5 }}
                   className="opacity-0 group-hover:opacity-100 transition-opacity"
@@ -484,7 +484,7 @@ const Donate = () => {
               Choose Your Impact
             </h2>
             <p className="text-2xl text-earth-brown/80 max-w-2xl mx-auto">
-              Select a package that matches your giving goals
+              Select a VanRaksha package that matches your giving goals
             </p>
           </div>
 
@@ -521,34 +521,34 @@ const Donate = () => {
                     <div className="flex flex-col flex-grow space-y-6">
                       <div>
                         <h3 className={`text-4xl font-bold ${pkg.textColor} mb-1`}>
-                          ${pkg.amount}
-                        </h3>
+                    ${pkg.amount}
+                  </h3>
                         <p className={`${pkg.textColor}/80 text-lg`}>
-                          Plants {pkg.trees} {pkg.trees === 1 ? 'Tree' : 'Trees'}
-                        </p>
+                    Supports {pkg.trees} {pkg.trees === 1 ? 'Tree' : 'Trees'} with VanRaksha
+                  </p>
                       </div>
 
                       <ul className="space-y-4 flex-grow">
-                        {pkg.perks.map((perk, i) => (
+                    {pkg.perks.map((perk, i) => (
                           <li key={i} className={`flex items-start ${pkg.textColor}/80`}>
                             <svg className={`w-5 h-5 mr-3 mt-1 ${pkg.textColor}`} fill="currentColor" viewBox="0 0 24 24">
                               <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-.997-6l7.07-7.071-1.414-1.414-5.656 5.657-2.829-2.829-1.414 1.414L11.003 16z"/>
-                            </svg>
+                        </svg>
                             <span>{perk}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      </li>
+                    ))}
+                  </ul>
 
-                      <motion.button
+                  <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => setSelectedAmount(pkg.amount)}
+                    onClick={() => setSelectedAmount(pkg.amount)}
                         className={`w-full bg-forest-green text-white font-semibold py-4 rounded-xl 
                                  hover:bg-forest-green/90 transition-all duration-300
                                  shadow-md`}
-                      >
-                        Select Package
-                      </motion.button>
+                  >
+                    Select Package
+                  </motion.button>
                     </div>
 
                     {/* Decorative Elements */}
@@ -598,7 +598,7 @@ const Donate = () => {
             >
               <h3 className="text-6xl font-bold text-forest-green mb-6 tracking-tight">
                 Complete Your Impact
-              </h3>
+            </h3>
               <p className="text-xl text-earth-brown/80">Choose your preferred payment method</p>
             </motion.div>
             
@@ -730,7 +730,7 @@ const Donate = () => {
               Tree Champions
             </h2>
             <p className="text-xl text-earth-brown/80 max-w-2xl mx-auto">
-              Join our growing community of environmental heroes making a real impact
+              Join VanRaksha's growing community of environmental heroes making a real impact
             </p>
           </motion.div>
           
@@ -746,24 +746,24 @@ const Donate = () => {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-forest-green/20 to-leaf-green/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
                 <div className="relative bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-forest-green/10 shadow-xl">
-                  <div className="flex items-center gap-6">
-                    <div className="relative">
+                <div className="flex items-center gap-6">
+                  <div className="relative">
                       <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transform rotate-45 overflow-hidden
-                                    ${index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' :
-                                      index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
-                                      index === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-800' :
-                                      'bg-gradient-to-br from-leaf-green to-forest-green'}`}
-                      >
+                                  ${index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' :
+                                    index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
+                                    index === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-800' :
+                                    'bg-gradient-to-br from-leaf-green to-forest-green'}`}
+                    >
                         <span className="text-2xl font-bold text-white transform -rotate-45">#{index + 1}</span>
-                      </div>
-                      {index < 3 && (
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                          className="absolute -inset-2 rounded-2xl border-2 border-dashed border-forest-green/20 -z-10"
-                        />
-                      )}
                     </div>
+                    {index < 3 && (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                          className="absolute -inset-2 rounded-2xl border-2 border-dashed border-forest-green/20 -z-10"
+                      />
+                    )}
+                  </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <span className="text-2xl font-bold text-forest-green">{donor.name}</span>
@@ -856,7 +856,7 @@ const Donate = () => {
             </span>
             <h2 className="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-forest-green via-leaf-green to-forest-green bg-clip-text text-transparent mb-6">
               Your Impact Breakdown
-            </h2>
+          </h2>
             <p className="text-xl text-earth-brown/80 max-w-2xl mx-auto">
               See exactly how your contribution creates positive change
             </p>
@@ -882,7 +882,7 @@ const Donate = () => {
                     {item.title}
                   </h3>
                   <div className="text-5xl font-bold bg-gradient-to-r from-forest-green to-leaf-green bg-clip-text text-transparent mb-6">
-                    {item.value}%
+                  {item.value}%
                   </div>
                   <div className="h-2 bg-forest-green/10 rounded-full overflow-hidden mb-4">
                     <motion.div
@@ -910,7 +910,7 @@ const Donate = () => {
               { label: 'CO₂ Offset', value: '2,150', unit: 'tons', icon: '🌍' },
               { label: 'Active Projects', value: '12', icon: '🎯' }
             ].map((stat) => (
-              <motion.div
+                  <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, scale: 0.5 }}
                 whileInView={{ opacity: 1, scale: 1 }}

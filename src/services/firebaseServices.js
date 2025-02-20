@@ -27,15 +27,68 @@ export const storiesService = {
   // Add a new story
   async addStory(storyData) {
     try {
+      console.log('Adding story with data:', {
+        userId: storyData.userId,
+        userDisplayName: storyData.userDisplayName,
+        userAvatar: storyData.userAvatar
+      });
+
+      // Validate and ensure user data is present
+      if (!storyData.userId) {
+        throw new Error('User ID is required');
+      }
+
+      // Get user profile data if not provided
+      if (!storyData.userDisplayName || !storyData.userAvatar) {
+        console.log('Fetching user profile data for userId:', storyData.userId);
+        const userRef = doc(db, 'users', storyData.userId);
+        const userDoc = await getDoc(userRef);
+        
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          console.log('User data fetched:', {
+            displayName: userData.displayName,
+            avatarUrl: userData.avatarUrl
+          });
+          
+          // Clean up avatar URL if it exists
+          let avatarUrl = userData.avatarUrl;
+          if (avatarUrl && typeof avatarUrl === 'string') {
+            avatarUrl = avatarUrl.replace(/^["'](.+)["']$/, '$1');
+          }
+          
+          storyData.userDisplayName = userData.displayName || 'Anonymous';
+          storyData.userAvatar = avatarUrl || '/default-avatar.png';
+        } else {
+          console.log('User document not found, using defaults');
+          storyData.userDisplayName = 'Anonymous';
+          storyData.userAvatar = '/default-avatar.png';
+        }
+      } else {
+        // Clean up provided avatar URL
+        if (storyData.userAvatar && typeof storyData.userAvatar === 'string') {
+          storyData.userAvatar = storyData.userAvatar.replace(/^["'](.+)["']$/, '$1');
+        }
+      }
+
+      console.log('Final story data for submission:', {
+        userDisplayName: storyData.userDisplayName,
+        userAvatar: storyData.userAvatar
+      });
+
       const storiesRef = collection(db, 'stories');
       const story = {
         ...storyData,
         createdAt: serverTimestamp(),
         likes: 0,
         commentCount: 0,
-        likedBy: []
+        likedBy: [],
+        // Ensure these fields are always present and clean
+        userDisplayName: storyData.userDisplayName || 'Anonymous',
+        userAvatar: storyData.userAvatar || '/default-avatar.png'
       };
       const docRef = await addDoc(storiesRef, story);
+      console.log('Story added successfully with ID:', docRef.id);
       return docRef.id;
     } catch (error) {
       console.error('Error adding story:', error);
@@ -54,10 +107,12 @@ export const storiesService = {
       );
       const querySnapshot = await getDocs(q);
       
-      // Get the comments count for each story
+      // Get the comments count and user data for each story
       const stories = await Promise.all(
         querySnapshot.docs.map(async (doc) => {
           const storyData = doc.data();
+          
+          // Get comments count
           const commentsRef = collection(db, 'stories', doc.id, 'comments');
           const commentsSnapshot = await getDocs(commentsRef);
           const commentCount = commentsSnapshot.size;
@@ -67,9 +122,23 @@ export const storiesService = {
             await updateDoc(doc.ref, { commentCount });
           }
 
+          // Get user profile data if not already included
+          let userData = {};
+          if (storyData.userId && (!storyData.userDisplayName || !storyData.userAvatar)) {
+            const userRef = doc(db, 'users', storyData.userId);
+            const userDoc = await getDoc(userRef);
+            if (userDoc.exists()) {
+              userData = {
+                userDisplayName: userDoc.data().displayName || 'Anonymous',
+                userAvatar: userDoc.data().avatarUrl || '/default-avatar.png'
+              };
+            }
+          }
+
           return {
             id: doc.id,
             ...storyData,
+            ...userData,
             commentCount
           };
         })
@@ -272,43 +341,89 @@ export const eventsService = {
   // Get upcoming events
   async getUpcomingEvents(limitCount = 10) {
     try {
+      console.log('Starting getUpcomingEvents with limit:', limitCount);
       const eventsRef = collection(db, 'events');
       const q = query(
         eventsRef,
         orderBy('date', 'asc'),
         limit(limitCount)
       );
+      console.log('Executing Firestore query for events...');
       const querySnapshot = await getDocs(q);
+      console.log('Retrieved events count:', querySnapshot.size);
+      
       const events = querySnapshot.docs.map(doc => {
         const data = doc.data();
-        console.log('Raw event data:', data);
+        console.log('Processing event document:', {
+          id: doc.id,
+          rawData: {
+            title: data.title,
+            date: data.date,
+            status: data.status,
+            participantCount: data.participantCount,
+            maxParticipants: data.maxParticipants
+          }
+        });
         
         // Handle date conversion safely
         let convertedDate = null;
         if (data.date && typeof data.date.toDate === 'function') {
           convertedDate = data.date.toDate();
+          console.log('Converted Timestamp to Date:', convertedDate);
         } else if (data.date instanceof Date) {
           convertedDate = data.date;
+          console.log('Date already in correct format:', convertedDate);
         } else if (typeof data.date === 'string') {
           convertedDate = new Date(data.date);
+          console.log('Converted string to Date:', convertedDate);
+        } else {
+          console.log('Unable to convert date, using null. Original value:', data.date);
         }
         
-        return {
+        const processedEvent = {
           id: doc.id,
           ...data,
           date: convertedDate
         };
+        
+        console.log('Processed event:', {
+          id: processedEvent.id,
+          title: processedEvent.title,
+          date: processedEvent.date,
+          status: processedEvent.status,
+          participantCount: processedEvent.participantCount
+        });
+        
+        return processedEvent;
       });
-      console.log('Processed events:', events);
       
       // Filter out events with invalid dates and sort by date
       const validEvents = events
-        .filter(event => event.date instanceof Date && !isNaN(event.date))
+        .filter(event => {
+          const isValid = event.date instanceof Date && !isNaN(event.date);
+          if (!isValid) {
+            console.log('Filtering out event with invalid date:', {
+              id: event.id,
+              title: event.title,
+              date: event.date
+            });
+          }
+          return isValid;
+        })
         .sort((a, b) => a.date - b.date);
+      
+      console.log('Final processed events count:', validEvents.length);
+      console.log('Final events data:', validEvents.map(event => ({
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        status: event.status,
+        participantCount: event.participantCount
+      })));
       
       return validEvents;
     } catch (error) {
-      console.error('Error getting upcoming events:', error);
+      console.error('Error in getUpcomingEvents:', error);
       throw error;
     }
   },

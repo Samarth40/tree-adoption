@@ -7,11 +7,11 @@ import SuccessModal from '../components/SuccessModal';
 // Collaboration Models Data
 const collaborationModels = [
   {
-    title: "Corporate Tree Adoption",
+    title: "VanRaksha Partnership",
     icon: <FaTree className="w-8 h-8" />,
-    description: "Partner with us to adopt and nurture trees at scale",
+    description: "Partner with us to support and nurture trees at scale",
     benefits: [
-      "Customized adoption certificates",
+      "Customized partnership certificates",
       "Regular growth updates",
       "Employee engagement opportunities"
     ],
@@ -691,7 +691,7 @@ const Partner = () => {
                   required
                 >
                   <option value="">Select partnership type</option>
-                  <option value="corporate">Corporate Tree Adoption</option>
+                  <option value="corporate">VanRaksha Partnership</option>
                   <option value="event">Event Sponsorship</option>
                   <option value="campaign">Eco-awareness Campaign</option>
                   <option value="other">Other</option>

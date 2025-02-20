@@ -170,7 +170,7 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            About Tree Adoption Platform
+            About VanRaksha Platform
             <motion.div 
               className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 sm:w-24 h-1 bg-gradient-to-r from-forest-green to-sage-green rounded-full"
               initial={{ width: 0 }}
@@ -643,24 +643,24 @@ const About = () => {
           <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
             {[
               {
-                question: "How does tree adoption work?",
-                answer: "Tree adoption is a simple process where you can choose to either virtually or physically adopt a tree. Virtual adoption means an NGO/organization will care for your tree, while physical adoption allows you to plant and care for the tree yourself with our guidance and support."
+                question: "How does VanRaksha's tree support program work?",
+                answer: "VanRaksha's tree support program is a simple process where you can choose to either virtually or physically support a tree. Virtual support means an NGO/organization will care for your tree, while physical support allows you to plant and care for the tree yourself with our guidance and support."
               },
               {
-                question: "What are the benefits of adopting a tree?",
-                answer: "Adopting a tree helps combat climate change, creates wildlife habitats, and improves air quality. You'll receive regular updates about your tree's growth, impact metrics, and can participate in our community events. Each adopted tree absorbs approximately 48 pounds of CO₂ annually."
+                question: "What are the benefits of supporting a tree through VanRaksha?",
+                answer: "Supporting a tree through VanRaksha helps combat climate change, creates wildlife habitats, and improves air quality. You'll receive regular updates about your tree's growth, impact metrics, and can participate in our community events. Each supported tree absorbs approximately 48 pounds of CO₂ annually."
               },
               {
                 question: "How can I track my tree's progress?",
-                answer: "Through our interactive dashboard, you can monitor your tree's growth, environmental impact, and receive care reminders. We provide regular photo updates, growth measurements, and impact statistics for virtually adopted trees."
+                answer: "Through our interactive dashboard, you can monitor your tree's growth, environmental impact, and receive care reminders. We provide regular photo updates, growth measurements, and impact statistics for virtually supported trees."
               },
               {
-                question: "Can I adopt multiple trees?",
-                answer: "Yes! You can adopt as many trees as you'd like. Each tree contributes to environmental conservation, and we offer special packages for multiple tree adoptions. You can manage all your adopted trees through a single dashboard."
+                question: "Can I support multiple trees?",
+                answer: "Yes! You can support as many trees as you'd like. Each tree contributes to environmental conservation, and we offer special packages for multiple tree support initiatives. You can manage all your supported trees through a single dashboard."
               },
               {
                 question: "What happens if my tree doesn't survive?",
-                answer: "We have measures in place to ensure the highest survival rate for all adopted trees. However, if a tree doesn't survive within the first year of adoption, we offer a free replacement or the option to adopt another tree at no additional cost."
+                answer: "We have measures in place to ensure the highest survival rate for all supported trees. However, if a tree doesn't survive within the first year of support, we offer a free replacement or the option to support another tree at no additional cost."
               }
             ].map((faq, index) => (
               <motion.div

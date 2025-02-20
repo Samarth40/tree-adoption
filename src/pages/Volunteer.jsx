@@ -485,7 +485,7 @@ const Volunteer = () => {
               className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight px-4"
             >
               <span className="inline-block text-white pb-2 sm:pb-4 drop-shadow-lg">
-                Join Our Green
+                Join VanRaksha's
               </span>
               <br />
               <span className="inline-block text-cream drop-shadow-lg">
@@ -500,7 +500,7 @@ const Volunteer = () => {
                          max-w-3xl mx-auto leading-relaxed italic relative px-8 sm:px-0"
             >
               <span className="hidden sm:block absolute -left-8 top-0 text-4xl text-cream opacity-50">"</span>
-              Small actions today lead to a greener tomorrow. Be part of the change!
+              Join VanRaksha in creating a greener tomorrow. Be part of the change!
               <span className="hidden sm:block absolute -right-8 bottom-0 text-4xl text-cream opacity-50">"</span>
             </motion.p>
 
@@ -627,10 +627,10 @@ const Volunteer = () => {
             <GlassCard className="p-8 sm:p-10">
               <div className="text-center mb-10">
                 <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-forest-green to-leaf-green bg-clip-text text-transparent mb-4">
-                  {selectedRole ? `Apply as ${selectedRole.title}` : 'Join Our Mission'}
+                  {selectedRole ? `Join VanRaksha as ${selectedRole.title}` : 'Join Our Mission'}
                 </h2>
                 <p className="text-sage-green text-lg">
-                  Fill out the form below and our team will get back to you within 24 hours
+                  Fill out the form below and the VanRaksha team will get back to you within 24 hours
                 </p>
               </div>
 

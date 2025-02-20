@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   doc, 
@@ -21,6 +21,17 @@ import {
   userProfileService,
   leaderboardService
 } from '../services/firebaseServices';
+import { 
+  FaTree, 
+  FaSeedling, 
+  FaCalendarAlt, 
+  FaMapMarkerAlt, 
+  FaComments, 
+  FaEye, 
+  FaHeart,
+  FaComment,
+  FaUserFriends
+} from 'react-icons/fa';
 
 // Add this helper function at the top of the file, after imports
 const formatTimestamp = (timestamp) => {
@@ -134,7 +145,7 @@ const communityStories = [
     },
     tree: "Neem",
     impact: "150kg CO₂",
-    story: "My journey with tree adoption started when I realized the importance of urban greenery. My neem tree has become a symbol of hope in our community.",
+    story: "My journey with VanRaksha started when I realized the importance of urban greenery. My neem tree has become a symbol of hope in our community.",
     images: ["https://images.unsplash.com/photo-1588449668365-d15e397f6787"],
     likes: 124,
     comments: 18
@@ -148,7 +159,7 @@ const communityStories = [
     },
     tree: "Peepal",
     impact: "200kg CO₂",
-    story: "Adopting a peepal tree has connected me with our cultural heritage. It's amazing to see how one tree can make such a difference.",
+    story: "Being part of VanRaksha has connected me with our cultural heritage. It's amazing to see how one tree can make such a difference.",
     images: ["https://images.unsplash.com/photo-1610847499832-918a1c3c6813"],
     likes: 89,
     comments: 12
@@ -265,49 +276,40 @@ const CommunityPage = () => {
         setLoading(true);
         setError(null);
 
-        // Check if user is authenticated
-        if (!currentUser) {
-          console.log("No authenticated user found");
-          navigate('/login');
-          return;
-        }
-
-        // Fetch user profile with retry
-        const userProfileData = await retryOperation(async () => {
-          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-          if (!userDoc.exists()) {
-            throw new Error('User profile not found');
+        // Get user profile data
+        if (currentUser) {
+          const userRef = doc(db, 'users', currentUser.uid);
+          const userDoc = await getDoc(userRef);
+          if (userDoc.exists()) {
+            setUserProfile({
+              ...userDoc.data(),
+              id: currentUser.uid
+            });
+            setIsAdmin(userDoc.data().isAdmin || false);
           }
-          console.log('User profile data:', userDoc.data());
-          return userDoc.data();
-        });
-
-        console.log('Setting user profile:', userProfileData);
-        console.log('Admin status:', userProfileData.isAdmin);
-        setUserProfile(userProfileData);
-        setIsAdmin(userProfileData.isAdmin || false);
-
-        if (!userProfileData.isProfileComplete) {
-          console.log("Profile incomplete, redirecting to profile page");
-          navigate('/profile');
-          return;
         }
 
-        // Load all community data
+        // Load community data
         await loadCommunityData();
-        
+
+        // Load impact leaders
+        try {
+          const leaders = await leaderboardService.getTopUsers();
+          setImpactLeaders(leaders);
+        } catch (error) {
+          console.error('Error loading impact leaders:', error);
+        }
+
+        setLoading(false);
       } catch (error) {
-        console.error('Error initializing community page:', error);
-        setError(error.message === 'Failed to get document because the client is offline'
-          ? 'You appear to be offline. Please check your internet connection.'
-          : 'Failed to load community data. Please try again later.');
-      } finally {
+        console.error('Error initializing page:', error);
+        setError('Failed to load page data');
         setLoading(false);
       }
     };
 
     initializePage();
-  }, [currentUser, navigate]);
+  }, [currentUser]);
 
   // Add useEffect for error toast
   useEffect(() => {
@@ -389,13 +391,18 @@ const CommunityPage = () => {
         }
       }
 
+      // Get the latest user profile data from Firebase
+      const userRef = doc(db, 'users', currentUser.uid);
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.exists() ? userDoc.data() : {};
+
       await storiesService.addStory({
         title: newStory.title,
         content: newStory.content,
         imageUrl,
         userId: currentUser.uid,
-        userDisplayName: userProfile.displayName,
-        userAvatar: userProfile.avatarUrl
+        userDisplayName: userData.displayName || userProfile.displayName,
+        userAvatar: userData.avatarUrl // Let storiesService handle the fallback
       });
 
       // Reset form and close modal only on success
@@ -563,33 +570,82 @@ const CommunityPage = () => {
 
   const loadCommunityData = async () => {
     try {
+      console.log('Starting loadCommunityData...');
+      
       const loadDataWithRetry = async (serviceFn, retries = 3) => {
-        for (let i = 0; i < retries; i++) {
-          try {
-            return await serviceFn();
-          } catch (error) {
-            if (i === retries - 1) throw error;
-            await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
-          }
+        try {
+          console.log('Attempting to load data with retry...');
+          return await retryOperation(serviceFn, retries);
+        } catch (error) {
+          console.error('Failed to load data after retries:', error);
+          throw error;
         }
       };
 
-      console.log('Loading community data...');
+      console.log('Initiating parallel data loading...');
       const [storiesData, eventsData, discussionsData] = await Promise.all([
-        loadDataWithRetry(() => storiesService.getStories()),
-        loadDataWithRetry(() => eventsService.getUpcomingEvents()),
-        loadDataWithRetry(() => discussionsService.getTopics())
+        loadDataWithRetry(async () => {
+          console.log('Loading stories...');
+          const stories = await storiesService.getStories();
+          console.log('Stories loaded:', stories.map(story => ({
+            id: story.id,
+            userDisplayName: story.userDisplayName,
+            userAvatar: story.userAvatar,
+            userId: story.userId
+          })));
+          return stories;
+        }),
+        loadDataWithRetry(() => {
+          console.log('Loading events...');
+          return eventsService.getUpcomingEvents();
+        }),
+        loadDataWithRetry(() => {
+          console.log('Loading discussions...');
+          return discussionsService.getTopics();
+        })
       ]);
 
-      console.log('Events data received:', eventsData);
-      console.log('Discussions data received:', discussionsData);
+      console.log('All data loaded successfully');
+      console.log('Setting state with loaded data...');
       
-      setStories(storiesData);
+      // Process stories to ensure avatar URLs
+      const processedStories = storiesData.map(story => {
+        console.log('Processing story:', {
+          id: story.id,
+          userDisplayName: story.userDisplayName,
+          userAvatar: story.userAvatar,
+          hasUserData: !!story.userDisplayName
+        });
+
+        // Clean up avatar URL by removing any extra quotes
+        let cleanAvatarUrl = story.userAvatar;
+        if (cleanAvatarUrl && typeof cleanAvatarUrl === 'string') {
+          cleanAvatarUrl = cleanAvatarUrl.replace(/^["'](.+)["']$/, '$1');
+        }
+
+        return {
+          ...story,
+          userAvatar: cleanAvatarUrl || '/default-avatar.png'
+        };
+      });
+
+      console.log('Setting state with processed stories:', processedStories.map(story => ({
+        id: story.id,
+        userDisplayName: story.userDisplayName,
+        userAvatar: story.userAvatar
+      })));
+
+      setStories(processedStories);
       setEvents(eventsData);
       setDiscussions(discussionsData);
+      setLoading(false);
+      
+      console.log('State updated with new data');
+      
     } catch (error) {
-      console.error('Error loading community data:', error);
+      console.error('Error in loadCommunityData:', error);
       setError('Failed to load community data');
+      setLoading(false);
     }
   };
 
@@ -827,8 +883,8 @@ const CommunityPage = () => {
       <div className="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-16">
         {/* Page Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-forest-green mb-4">Tree Adoption Community</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">Connect, share, and grow with fellow tree adopters in our vibrant community.</p>
+          <h1 className="text-4xl font-bold text-forest-green mb-4">VanRaksha Community</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">Connect, share, and grow with fellow VanRaksha members in our vibrant community.</p>
         </div>
 
         {/* Navigation Tabs */}
@@ -867,19 +923,29 @@ const CommunityPage = () => {
                     {stories.map((story) => (
                       <div key={story.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                         <div className="p-6">
-                          <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center justify-between">
                             <div className="flex items-center">
+                              {console.log('Rendering story avatar:', {
+                                id: story.id,
+                                userAvatar: story.userAvatar,
+                                userDisplayName: story.userDisplayName
+                              })}
                               <img 
-                                src={story.userAvatar || story.user?.avatar || '/default-avatar.png'} 
-                                alt={story.userDisplayName || story.user?.name} 
-                                className="w-12 h-12 rounded-full object-cover" 
+                                src={story.userAvatar}
+                                alt={story.userDisplayName || 'User'}
+                                className="w-10 h-10 rounded-full object-cover"
+                                onError={(e) => {
+                                  console.log('Avatar load error for story:', story.id);
+                                  e.target.src = '/default-avatar.png';
+                                  e.target.onerror = null; // Prevent infinite loop if default avatar also fails
+                                }}
                               />
                               <div className="ml-4">
                                 <h3 className="font-semibold text-gray-800">
-                                  {story.userDisplayName || story.user?.name}
+                                  {story.userDisplayName || 'Anonymous'}
                                 </h3>
                                 <div className="flex items-center text-sm text-gray-500">
-                                  <span>{story.location || story.user?.location || 'Unknown location'}</span>
+                                  <span>{story.location || 'Tree Enthusiast'}</span>
                                   <span className="mx-2">•</span>
                                   <span>{formatTimestamp(story.createdAt)}</span>
                                 </div>
@@ -920,11 +986,11 @@ const CommunityPage = () => {
                           <div className="flex items-center justify-between text-sm text-gray-500">
                             <div className="flex items-center space-x-4">
                               <span className="flex items-center">
-                                <span className="mr-2">🌳</span>
+                                <FaTree className="mr-2 text-forest-green" />
                                 {story.tree || 'Tree'}
                               </span>
                               <span className="flex items-center">
-                                <span className="mr-2">🌱</span>
+                                <FaSeedling className="mr-2 text-forest-green" />
                                 {formatImpact(story.impact)}
                               </span>
                             </div>
@@ -933,11 +999,11 @@ const CommunityPage = () => {
                                 onClick={() => handleLikeStory(story.id)}
                                 className="flex items-center text-gray-500 hover:text-leaf-green transition-colors"
                               >
-                                <span className="mr-1">❤️</span>
+                                <FaHeart className="mr-1" />
                                 {story.likes || 0}
               </button>
                               <button className="flex items-center text-gray-500 hover:text-leaf-green transition-colors">
-                                <span className="mr-1">💭</span>
+                                <FaComment className="mr-1" />
                                 {story.comments || 0}
                               </button>
                             </div>
@@ -1083,74 +1149,87 @@ const CommunityPage = () => {
 
                 {activeTab === 'events' && (
                   <div className="space-y-6">
-                    {events.map((event) => (
-                      <div key={event.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                        <div className="aspect-w-16 aspect-h-9">
-                          <img src={event.image || "https://images.unsplash.com/photo-1576085898323-218337e3e43c"} alt={event.title} className="w-full h-48 object-cover" />
-                        </div>
-                        <div className="p-6">
-                          <div className="flex justify-between items-start mb-4">
-                            <div>
-                              <h3 className="text-xl font-semibold text-gray-800">{event.title}</h3>
-                              <p className="text-sm text-gray-500">
-                                Organized by {event.userDisplayName || 'Anonymous'}
-                              </p>
+                    {console.log('Rendering events section, events:', events)}
+                    {events.map((event) => {
+                      console.log('Rendering event:', {
+                        id: event.id,
+                        title: event.title,
+                        date: event.date,
+                        status: event.status,
+                        participantCount: event.participantCount
+                      });
+                      return (
+                        <div key={event.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                          <div className="aspect-w-16 aspect-h-9">
+                            <img src={event.image || "https://images.unsplash.com/photo-1576085898323-218337e3e43c"} alt={event.title} className="w-full h-48 object-cover" />
+                          </div>
+                          <div className="p-6">
+                            <div className="flex justify-between items-start mb-4">
+                              <div>
+                                <h3 className="text-xl font-semibold text-gray-800">{event.title}</h3>
+                                <p className="text-sm text-gray-500">
+                                  Organized by {event.userDisplayName || 'Anonymous'}
+                                </p>
+                              </div>
+                              {isAdmin && (
+                                <button
+                                  onClick={() => handleDeleteEvent(event.id)}
+                                  className="text-gray-400 hover:text-red-500 transition-colors"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              )}
                             </div>
-                            {isAdmin && (
+                            <p className="text-gray-600 mb-4">{event.description}</p>
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                              <div className="flex items-center text-gray-500">
+                                <FaCalendarAlt className="mr-2" />
+                                {formatTimestamp(event.date)}
+                              </div>
+                              <div className="flex items-center text-gray-500">
+                                <FaMapMarkerAlt className="mr-2" />
+                                {event.location}
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div className="text-sm text-gray-500">
+                                <span>{event.participants?.length || 0}</span>
+                                <span className="mx-1">/</span>
+                                <span>{event.maxParticipants}</span>
+                                <span className="ml-1 flex items-center">
+                                  <FaUserFriends className="mr-1" />
+                                  participants
+                                </span>
+                              </div>
                               <button
-                                onClick={() => handleDeleteEvent(event.id)}
-                                className="text-gray-400 hover:text-red-500 transition-colors"
+                                onClick={() => handleJoinEvent(event.id)}
+                                disabled={
+                                  submitting || 
+                                  (event.participants?.length >= event.maxParticipants && 
+                                  !event.participants?.includes(currentUser?.uid))
+                                }
+                                className={`px-4 py-2 rounded-lg transition-colors ${
+                                  event.participants?.includes(currentUser?.uid)
+                                    ? 'bg-forest-green text-white hover:bg-red-500'
+                                    : 'bg-leaf-green text-white hover:bg-forest-green'
+                                } disabled:opacity-50 disabled:cursor-not-allowed`}
                               >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                                {submitting 
+                                  ? 'Processing...' 
+                                  : event.participants?.includes(currentUser?.uid)
+                                    ? 'Leave Event'
+                                    : event.participants?.length >= event.maxParticipants
+                                      ? 'Event Full'
+                                      : 'Join Event'
+                                }
                               </button>
-                            )}
-                          </div>
-                          <p className="text-gray-600 mb-4">{event.description}</p>
-                          <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div className="flex items-center text-gray-500">
-                              <span className="mr-2">📅</span>
-                              {formatTimestamp(event.date)}
                             </div>
-                            <div className="flex items-center text-gray-500">
-                              <span className="mr-2">📍</span>
-                              {event.location}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm text-gray-500">
-                              <span>{event.participants?.length || 0}</span>
-                              <span className="mx-1">/</span>
-                              <span>{event.maxParticipants}</span>
-                              <span className="ml-1">participants</span>
-                            </div>
-                            <button
-                              onClick={() => handleJoinEvent(event.id)}
-                              disabled={
-                                submitting || 
-                                (event.participants?.length >= event.maxParticipants && 
-                                !event.participants?.includes(currentUser?.uid))
-                              }
-                              className={`px-4 py-2 rounded-lg transition-colors ${
-                                event.participants?.includes(currentUser?.uid)
-                                  ? 'bg-forest-green text-white hover:bg-red-500'
-                                  : 'bg-leaf-green text-white hover:bg-forest-green'
-                              } disabled:opacity-50 disabled:cursor-not-allowed`}
-                            >
-                              {submitting 
-                                ? 'Processing...' 
-                                : event.participants?.includes(currentUser?.uid)
-                                  ? 'Leave Event'
-                                  : event.participants?.length >= event.maxParticipants
-                                    ? 'Event Full'
-                                    : 'Join Event'
-                              }
-                            </button>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
 
@@ -1205,11 +1284,11 @@ const CommunityPage = () => {
                           <div className="flex items-center justify-between text-sm text-gray-500">
                             <div className="flex items-center space-x-6">
                               <span className="flex items-center">
-                                <span className="mr-2">💬</span>
+                                <FaComments className="mr-2" />
                                 {topic.replies || 0} replies
                               </span>
                               <span className="flex items-center">
-                                <span className="mr-2">👁️</span>
+                                <FaEye className="mr-2" />
                                 {topic.views || 0} views
                               </span>
                             </div>
@@ -1310,14 +1389,19 @@ const CommunityPage = () => {
                     <div key={leader.id} className="flex items-center">
                       <span className="w-6 text-lg font-semibold text-leaf-green">#{index + 1}</span>
                       <img 
-                        src={leader.avatar || '/default-avatar.png'} 
+                        src={leader.avatarUrl || '/default-avatar.png'} 
                         alt={leader.displayName} 
-                        className="w-10 h-10 rounded-full object-cover mx-3" 
+                        className="w-10 h-10 rounded-full object-cover mx-3"
+                        onError={(e) => {
+                          console.log('Avatar load error for leader:', leader.id);
+                          e.target.src = '/default-avatar.png';
+                          e.target.onerror = null;
+                        }}
                       />
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-800">{leader.displayName || 'Anonymous'}</h4>
                         <p className="text-sm text-gray-500">
-                          {leader.treesPlanted || 0} trees · {leader.impact || 0}kg CO₂
+                          {leader.treesPlanted || 0} trees · {formatImpact(leader.impact)}
                         </p>
                       </div>
                     </div>
@@ -1461,7 +1545,6 @@ const CommunityPage = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                           <p className="text-gray-500">Click to upload an image of trees or plants</p>
-                          <p className="text-sm text-gray-400 mt-1">The image must clearly show trees or plants</p>
                           <p className="text-sm text-gray-400">PNG, JPG up to 5MB</p>
                         </div>
                       )}
