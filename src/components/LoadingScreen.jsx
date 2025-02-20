@@ -10,6 +10,14 @@ const LoadingScreen = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="text-center">
+        <img 
+          src="/TreeAdopt Logo.png" 
+          alt="VanaRaksha Logo" 
+          className="h-24 w-auto mx-auto mb-4"
+        />
+        <h1 className="text-3xl font-bold text-forest-green">
+          VanaRaksha
+        </h1>
         <motion.div
           className="w-24 h-24 mb-8 mx-auto"
           animate={{
