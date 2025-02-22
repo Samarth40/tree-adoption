@@ -147,11 +147,21 @@ const NFTCollection = () => {
     const [toast, setToast] = useState(null);
 
     useEffect(() => {
+        // Handle hash-based navigation
+        if (location.hash === '#nft-grid') {
+            const element = document.getElementById('nft-grid');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [location.hash, nfts]); // Add nfts as dependency to ensure content is loaded
+
+    useEffect(() => {
         if (location.state?.mintSuccess) {
             setShowSuccess(true);
             setMintedTreeName(location.state.mintedTree || 'Tree');
             // Clear the location state to prevent re-showing the success message
-            navigate(location.pathname, { replace: true });
+            navigate(location.pathname + location.hash, { replace: true });
             const timer = setTimeout(() => {
                 setShowSuccess(false);
             }, 5000);
@@ -417,7 +427,7 @@ const NFTCollection = () => {
                     </div>
                 ) : (
                     <AnimatePresence>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div id="nft-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {nfts.map((nft) => (
                                 <NFTCard
                                     key={nft.tree_id}

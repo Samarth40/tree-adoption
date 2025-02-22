@@ -51,14 +51,17 @@ const NFTMinting = ({ tree: propTree, onSuccess }) => {
             // Call onSuccess if provided
             onSuccess?.(result);
 
-            // Navigate to NFT collection after successful minting
+            // Navigate within NFT dashboard and switch to collection tab
             setTimeout(() => {
-                navigate('/nft-collection', { 
+                navigate('/nft', { 
                     state: { 
                         mintSuccess: true,
                         mintedTree: tree.common_names?.english || tree.scientific_name
-                    }
+                    },
+                    replace: true
                 });
+                // Use window.location.hash to trigger the tab switch
+                window.location.hash = 'nft-grid';
             }, 2000);
         } catch (error) {
             console.error('Minting error:', error);

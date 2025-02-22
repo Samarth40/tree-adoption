@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import PasswordGate from './components/PasswordGate';
 import ExplorePage from './pages/ExplorePage';
 import TreePlayground from './pages/TreePlayground';
 import CommunityPage from './pages/CommunityPage';
@@ -23,6 +22,7 @@ import Donate from './pages/Donate';
 import TreeChatPage from './pages/TreeChatPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import ContactUsPage from './pages/ContactUsPage';
+import LoadingScreen from './components/LoadingScreen';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -38,16 +38,6 @@ const queryClient = new QueryClient({
 const HomePage = React.lazy(() => import('./pages/HomePage'));
 const About = React.lazy(() => import('./components/About'));
 
-// Loading component
-const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-cream">
-    <div className="space-y-4 text-center">
-      <div className="w-16 h-16 border-4 border-forest-green border-t-transparent rounded-full animate-spin mx-auto"></div>
-      <p className="text-forest-green text-lg">Loading...</p>
-    </div>
-  </div>
-);
-
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -56,32 +46,14 @@ const pageTransition = {
 };
 
 function App() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const { currentUser } = useAuth();
-
-  // Check if the app was previously unlocked
-  useEffect(() => {
-    const unlocked = localStorage.getItem('treeAdoptionUnlocked');
-    if (unlocked === 'true') {
-      setIsUnlocked(true);
-    }
-  }, []);
-
-  const handleUnlock = (status) => {
-    setIsUnlocked(status);
-    localStorage.setItem('treeAdoptionUnlocked', status);
-  };
-
-  if (!isUnlocked) {
-    return <PasswordGate onUnlock={handleUnlock} />;
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <div className="min-h-screen bg-white flex flex-col">
           <Navbar />
-          <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={<LoadingScreen />}>
             <AnimatePresence mode="wait">
               <motion.main 
                 className="flex-grow"

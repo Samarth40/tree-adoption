@@ -25,7 +25,12 @@ const NFTDashboard = () => {
                 console.error('Error parsing saved tree:', error);
             }
         }
-    }, [location.state]);
+
+        // Switch to collection tab if hash is present
+        if (location.hash === '#nft-grid') {
+            setActiveTab('collection');
+        }
+    }, [location.state, location.hash]);
 
     const handleMintSuccess = () => {
         // Switch to collection tab after successful minting
@@ -48,7 +53,11 @@ const NFTDashboard = () => {
                 {/* Tab Navigation */}
                 <div className="flex justify-center space-x-4 mb-4">
                     <button
-                        onClick={() => setActiveTab('mint')}
+                        onClick={() => {
+                            setActiveTab('mint');
+                            // Remove hash when switching to mint tab
+                            window.location.hash = '';
+                        }}
                         className={`px-6 py-3 rounded-xl font-medium transition-colors
                             ${activeTab === 'mint'
                                 ? 'bg-forest-green text-white'
@@ -58,7 +67,11 @@ const NFTDashboard = () => {
                         Mint NFT
                     </button>
                     <button
-                        onClick={() => setActiveTab('collection')}
+                        onClick={() => {
+                            setActiveTab('collection');
+                            // Add hash when switching to collection tab
+                            window.location.hash = 'nft-grid';
+                        }}
                         className={`px-6 py-3 rounded-xl font-medium transition-colors
                             ${activeTab === 'collection'
                                 ? 'bg-forest-green text-white'
